@@ -1,0 +1,80 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <div class="header">
+      <img src="/assets/smiley.jpg" alt="logo" />
+    </div>
+    <span style="font-size: x-large; font-style: bold, italic; color: white"
+      >Auth App</span
+    >
+
+    <button mat-button [matMenuTriggerFor]="manageMenu">Manage</button>
+    <mat-menu #manageMenu="matMenu" yPosition="below">
+      <button *ngIf="_authService.isAdmin()" mat-menu-item routerLink="/user">
+        User
+      </button>
+
+      <button
+        *ngIf="_authService.isAdmin()"
+        mat-menu-item
+        routerLink="/employee"
+      >
+        Employee
+      </button>
+
+      <button
+        *ngIf="_authService.isAdmin()"
+        mat-menu-item
+        routerLink="/productivitymultiplier"
+      >
+        Productivity Multiplier
+      </button>
+
+      <button
+        *ngIf="_authService.isAdmin()"
+        mat-menu-item
+        routerLink="/employeeproductivity"
+      >
+        Employee Productivity
+      </button>
+
+      <button mat-menu-item (click)="showTime()">Last time</button>
+    </mat-menu>
+
+    <!-- User name -->
+    <span class="example-spacer">
+      <input
+        matInput
+        type="text"
+        readonly
+        *ngIf="_authService.loggedIn()"
+        [(ngModel)]="_dataService.loggedInUserName"
+        style="
+          margin-left: 2rem;
+          text-align-last: right;
+          font-size: medium;
+          font-style: bold, italic;
+          font-family: 'Geneva';
+          color: white;
+        "
+      />
+    </span>
+
+    <!-- Logout button -->
+    <button
+      *ngIf="_authService.loggedIn()"
+      class="mat-button"
+      (click)="logout()"
+      style="margin-left: 2rem; color: white"
+    >
+      Logout
+    </button>
+
+    <!-- Login Icon -->
+    <mat-icon
+      *ngIf="!_authService.loggedIn()"
+      routerLink="/login"
+      style="margin-left: 2rem; color: white"
+      >account_circle</mat-icon
+    >
+  </mat-toolbar-row>
+</mat-toolbar>

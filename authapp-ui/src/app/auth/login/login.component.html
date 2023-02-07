@@ -1,1 +1,68 @@
-<p>login works!</p>
+<div class="loginPanel" align="center">
+  <mat-card
+    class="mat-elevation-z8"
+    style="margin-top: 5rem; width: 60%; text-align: center"
+  >
+    <form [formGroup]="loginForm">
+      <div align="center">
+        <mat-form-field style="margin-top: 1rem; width: 50%">
+          <input
+            formControlName="userName"
+            matInput
+            ngDefaultControl
+            placeholder="Username (xxx@gmail.com)"
+            email
+            required
+            [pattern]="emailPattern"
+          />
+          <mat-error *ngIf="loginForm.invalid"
+            >Please enter valid username</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div align="center">
+        <mat-form-field style="margin-top: 1rem; width: 50%">
+          <input
+            formControlName="password"
+            matInput
+            type="password"
+            placeholder="Enter password"
+            required
+          />
+          <mat-error *ngIf="loginForm.invalid"
+            >Please enter valid password</mat-error
+          >
+        </mat-form-field>
+      </div>
+
+      <div style="margin-bottom: 2rem; margin-top: 3rem">
+        <button
+          mat-raised-button
+          type="submit"
+          (click)="onAuthenticate(loginForm)"
+        >
+          Login
+        </button>
+
+        <button mat-raised-button routerLink="/resetpassword">
+          Reset password
+        </button>
+
+        <button mat-raised-button routerLink="/signup">Sign up</button>
+      </div>
+    </form>
+  </mat-card>
+</div>
+<!--
+<div class="loginPanel" align="center">
+  <mat-card class="mat-elevation-z8" style="margin-top: 2rem; width: 60%; text-align: center">
+    <mat-label style="font-size: medium; color: red">
+      Test : <a
+        href="http://localhost:8888/#/">http://localhost:8888/#/</a>
+    </mat-label>
+    <mat-label style="font-size: medium; color: red">
+      <br><br>You will be redirected to new url in  {{display}} seconds
+    </mat-label>
+  </mat-card>
+</div>
+-->

@@ -1,1 +1,114 @@
-<p>signup works!</p>
+<div align="center">
+  <mat-card class="mat-elevation-z8" style="margin-top: 30px">
+    <form [formGroup]="userForm">
+      <div align="center">
+        <mat-form-field style="width: 350px">
+          <input
+            formControlName="firstName"
+            matInput
+            ngDefaultControl
+            placeholder="Enter first name"
+            required
+          />
+          <mat-error *ngIf="!userForm.valid"
+            >Please enter valid first name</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field style="width: 350px">
+          <input
+            formControlName="lastName"
+            matInput
+            placeholder="Enter last name"
+          />
+          <mat-error *ngIf="!userForm.valid"
+            >Please enter valid last name</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div align="center" style="margin-top: 1rem">
+        <mat-form-field style="width: 350px">
+          <input
+            formControlName="userName"
+            matInput
+            placeholder="Enter username (xxx@gmail.com)"
+            required
+            [pattern]="emailPattern"
+            email
+          />
+          <mat-error *ngIf="!userForm.valid"
+            >Please enter valid email</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field style="width: 350px">
+          <input
+            formControlName="password"
+            matInput
+            type="password"
+            placeholder="Enter password"
+            required
+          />
+          <mat-error *ngIf="!userForm.valid">Please enter password</mat-error>
+        </mat-form-field>
+      </div>
+      <div align="center" style="margin-top: 1rem; margin-bottom: 1rem">
+        <mat-form-field
+          style="font-size: medium; font-style: italic, bold; width: 350px"
+        >
+          <mat-label>Select Team</mat-label>
+          <mat-select [(value)]="teamNameFromDropDown" formControlName="team">
+            <mat-option
+              *ngFor="let team of teamNameList"
+              [value]="team"
+              style="font-size: small; font-style: italic"
+              >{{ team }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="!userForm.valid">Please select a team</mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          style="font-size: medium; font-style: italic, bold; width: 350px"
+        >
+          <mat-label>Select Role</mat-label>
+          <mat-select [(value)]="roleFromDropDown" formControlName="role">
+            <mat-option
+              *ngFor="let role of roleList"
+              [value]="role"
+              style="font-size: small; font-style: italic"
+              >{{ role }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="!userForm.valid">Please select a role</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div align="center">
+        <mat-form-field
+          style="
+            margin-right: 130px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: 200px;
+          "
+        >
+          <input
+            formControlName="otp"
+            matInput
+            ngDefaultControl
+            placeholder="Enter OTP received"
+            required
+          />
+        </mat-form-field>
+        <button mat-raised-button (click)="GetOTP(userForm)">Get OTP</button>
+      </div>
+
+      <div align="center" style="margin-top: 10px; margin-bottom: 20px">
+        <button mat-raised-button (click)="onSignup(userForm)" type="submit">
+          Sign up
+        </button>
+        <button mat-raised-button routerLink="/login">Back to Login</button>
+      </div>
+    </form>
+  </mat-card>
+</div>
