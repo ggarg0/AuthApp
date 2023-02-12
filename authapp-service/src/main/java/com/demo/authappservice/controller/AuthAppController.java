@@ -88,11 +88,6 @@ public class AuthAppController {
 		return appService.addNewUser(newUser);
 	}
 
-	@DeleteMapping(value = "/api/manage/user/delete")
-	public int deleteUser(@RequestHeader HttpHeaders headers, String userName) {
-		return appService.deleteUser(userName, AppUtil.getLoggedUserFromHeader(headers));
-	}
-
 	@PutMapping(value = "/api/manage/user/save")
 	public int saveUser(@RequestHeader HttpHeaders headers, @RequestBody User user) {
 		return appService.saveUser(user, AppUtil.getLoggedUserFromHeader(headers));
