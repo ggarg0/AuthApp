@@ -80,9 +80,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	public boolean logRequestedURL(HttpServletRequest req) {
 		boolean result = true;
-		if (req.getRequestURL().toString().contains("refreshjwttoken")
-				|| req.getRequestURL().toString().contains("getproductivityrange")
-				|| req.getRequestURL().toString().contains("All/Staging")) {
+		if (req.getRequestURL().toString().contains("refreshjwttoken")) {
 			result = false;
 		}
 		return result;

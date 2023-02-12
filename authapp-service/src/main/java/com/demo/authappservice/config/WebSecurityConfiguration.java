@@ -25,7 +25,7 @@ public class WebSecurityConfiguration {
 		// Entry points
 		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeHttpRequests()
-			//	.requestMatchers("/**").permitAll()
+				.requestMatchers("/**").permitAll()
 				.requestMatchers("/h2-console").permitAll()
 				.requestMatchers("/api/manage/user/**").permitAll()
 				.requestMatchers("/api/user/refreshjwttoken/**").hasAnyRole("USER", "ADMIN")
