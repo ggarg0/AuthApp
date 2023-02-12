@@ -24,3 +24,17 @@
  *
  */
 
+DROP TABLE IF EXISTS USERS;
+CREATE TABLE USERS (
+               userid INT AUTO_INCREMENT  PRIMARY KEY,
+               firstname VARCHAR(100) NOT NULL,
+               lastname VARCHAR(100) NOT NULL,
+               username VARCHAR(100) NOT NULL,
+               pasword VARCHAR(250) DEFAULT NULL,
+               team VARCHAR(100),
+               role VARCHAR(100),
+               approved INT,
+               active INT                              
+);
+
+ALTER TABLE USERS ADD CONSTRAINT username_unique UNIQUE(username);

@@ -7,12 +7,22 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@SuppressWarnings("serial")
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "USERS")
 public class User implements UserDetails {
 
-	private String firstName;
-	private String lastName;
-	private String userName;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long userid;
+	private String firstname;
+	private String lastname;
+	private String username;
 	private String password;
 	private String team;
 	private String role;
@@ -23,19 +33,19 @@ public class User implements UserDetails {
 
 	@Override
 	public String toString() {
-		return "User [firstName=" + firstName + ", lastName=" + lastName + ", userName=" + userName + "" + ", team="
+		return "User [firstName=" + firstname + ", lastname=" + lastname + ", username=" + username + "" + ", team="
 				+ team + ", role=" + role + ", approved=" + approved + ", active=" + active + "]";
 	}
 
 	public User() {
 	}
 
-	public User(String firstName, String lastName, String userName, String password, String team, String role,
+	public User(String firstname, String lastname, String username, String password, String team, String role,
 			String approved, String active, String otp, String message) {
 		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.userName = userName;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.username = username;
 		this.password = password;
 		this.team = team;
 		this.role = role;
@@ -46,15 +56,15 @@ public class User implements UserDetails {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return firstname;
 	}
 
 	public String getLastName() {
-		return lastName;
+		return lastname;
 	}
 
 	public String getUserName() {
-		return userName;
+		return username;
 	}
 
 	public String getPassword() {
@@ -85,16 +95,16 @@ public class User implements UserDetails {
 		return message;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setFirstName(String firstname) {
+		this.firstname = firstname;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setLastName(String lastname) {
+		this.lastname = lastname;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserName(String username) {
+		this.username = username;
 	}
 
 	public void setPassword(String password) {
@@ -127,7 +137,7 @@ public class User implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return userName;
+		return username;
 	}
 
 	@Override

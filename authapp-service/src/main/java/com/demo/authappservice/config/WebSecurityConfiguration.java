@@ -25,9 +25,11 @@ public class WebSecurityConfiguration {
 		// Entry points
 		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeHttpRequests()
-				// .mvcMatchers("/api/**").permitAll()
-				.requestMatchers("/api/manage/user/**").permitAll().requestMatchers("/api/user/refreshjwttoken/**")
-				.hasAnyRole("USER", "ADMIN").requestMatchers("/api/admin/**").hasRole("ADMIN")
+			//	.requestMatchers("/**").permitAll()
+				.requestMatchers("/h2-console").permitAll()
+				.requestMatchers("/api/manage/user/**").permitAll()
+				.requestMatchers("/api/user/refreshjwttoken/**").hasAnyRole("USER", "ADMIN")
+				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 				.requestMatchers("/api/user/**").hasRole("USER").anyRequest().authenticated();
 
 		http.apply(new JwtTokenConfigurer(tokenProvider));
