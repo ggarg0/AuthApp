@@ -1,12 +1,18 @@
 package com.demo.authappservice.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.demo.authappservice.entity.User;
@@ -15,9 +21,8 @@ import com.demo.authappservice.util.AppUtil;
 import com.demo.authappservice.util.JwtUtil;
 
 @Service
-public class AuthAppService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+public class AuthAppService implements UserDetailsService {
+	
 	@Autowired
 	private AuthAppRepository authRepository;
 
@@ -26,6 +31,10 @@ public class AuthAppService {
 
 	@Autowired
 	OTPService otpService;
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	public static final String ADMIN = "ADMIN";
+	public static final String DEVELOPER = "DEVELOPER";
 
 	public List<User> retrieveAllUsers(String team) {
 		return authRepository.retrieveAllUsers(team);
@@ -65,12 +74,11 @@ public class AuthAppService {
 		try {
 			result = authRepository.saveUser(user);
 			if (result == 1) {
-				String messageBody = "Hello," + " \n\nAccess request for application has been modified:"
-						+ "\n\nRole : " + user.getRole() + "\nApproved : " + user.getApproved() + "\nActive : "
-						+ user.getActive() + "\nTeam : " + user.getTeam() + "\n\nThanks";
+				String messageBody = "Hello," + " \n\nAccess request for application has been modified:" + "\n\nRole : "
+						+ user.getRole() + "\nApproved : " + user.getApproved() + "\nActive : " + user.getActive()
+						+ "\nTeam : " + user.getTeam() + "\n\nThanks";
 
-				AppUtil.sendMail(user.getUserName(), null, "User access request", messageBody, true,
-						false);
+				AppUtil.sendMail(user.getUserName(), null, "User access request", messageBody, true, false);
 				logger.info("User " + user.getUserName() + " access request modified by " + loggedUser + " => Role : "
 						+ user.getRole() + ", Approved : " + user.getApproved() + " and Active : " + user.getActive());
 			} else {
@@ -137,5 +145,29 @@ public class AuthAppService {
 			logger.error("User password reset for " + resetUser.getUserName() + " : Exception - " + e.getMessage());
 		}
 		return result;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		List<User> userList = authRepository.authenticate(username);
+		if (!userList.isEmpty()) {
+			User user = userList.get(0);
+			return user;
+		} else {
+			logger.info("User {} not found", username);
+			throw new UsernameNotFoundException("User not found");
+		}
+	}
+
+	public Collection<GrantedAuthority> getGrantedAuthority(User user) {
+		Collection<GrantedAuthority> authorities = new ArrayList<>();
+		if (user.getRole().equalsIgnoreCase(ADMIN)) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}
+
+		if (user.getRole().equalsIgnoreCase(DEVELOPER)) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_DEVELOPER"));
+		}
+		return authorities;
 	}
 }

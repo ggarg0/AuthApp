@@ -1,16 +1,18 @@
 package com.demo.authappservice.repository;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Repository;
 
 import com.demo.authappservice.entity.User;
 import com.demo.authappservice.util.AppUtil;
 
+
+@Repository
 public class AuthAppRepository {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
