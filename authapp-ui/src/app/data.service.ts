@@ -18,6 +18,7 @@ export class DataService {
   }
 
   apiURL = 'http://localhost:8888/api/';
+
   emailPattern = '^[a-zA-Z0-9._%+-]+@gmail.com';
   snackbarduration = 5000;
   loggedInUserName = '';
