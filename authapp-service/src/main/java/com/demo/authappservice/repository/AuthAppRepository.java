@@ -1,44 +1,24 @@
 package com.demo.authappservice.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.demo.authappservice.entity.User;
-import com.demo.authappservice.util.AppUtil;
 
 
 @Repository
-public class AuthAppRepository {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public interface AuthAppRepository extends CrudRepository<User, Integer> {
+	
+	@Query("SELECT u FROM User u WHERE u.username = :username")
+	List<User> loadUserDetails(@Param("username") String username);
 
-	public List<User> retrieveAllUsers(String team) {
-		List<User> userList = new ArrayList<>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM WFC_USERS");
-
-		if (!team.equalsIgnoreCase("All"))
-			sql.append(" WHERE TEAM LIKE ('%" + team + "%')");
-
-		return userList;
-	}
-
-	public List<User> authenticate(String username) {
-		List<User> userList = new ArrayList<>();
-		try {
-
-		} catch (Exception e) {
-			User userWithException = new User();
-			userWithException.setMessage(e.getMessage());
-			userList.add(userWithException);
-			logger.error("User {} authentication exception - {}", username, e.getMessage());
-		}
-		return userList;
-	}
-
+	
+	//public List<User> authenticate(String username) ;
+	/*
 	public int addNewUser(User newUser) {
 		int result = 0;
 		int approved = 0;
@@ -151,4 +131,8 @@ public class AuthAppRepository {
 	public int incrementStringValue(String value) {
 		return Integer.parseInt(value) + 1;
 	}
+	*/
+
 }
+
+

@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,20 +28,26 @@ import com.demo.authappservice.util.AppUtil;
 @RestController
 public class AuthAppController {
 	@Autowired
-	private AuthAppService appService;
+	private AuthAppService appService;	
 
 	@Autowired
 	private JwtTokenProvider tokenProvider;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
-
+	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@GetMapping("/api/manage/users/{team}")
-	public List<User> retrieveAllUsers(@PathVariable String team) {
-		return appService.retrieveAllUsers(team);
+	@GetMapping("/api/manage/users")
+	public List<User> retrieveAllUsers() {
+		return appService.retrieveAllUsers();
 	}
+	
+	@GetMapping(value = "/api/loaduser")
+	public List<User> loadUserDetails(@RequestHeader HttpHeaders headers) {
+		return appService.loadUserDetails(AppUtil.getLoggedUserFromHeader(headers));
+	}	
+	
 
 	@PostMapping(value = "/api/manage/user/authenticate")
 	public List<User> authenticate(@RequestBody User user) {
@@ -73,6 +78,8 @@ public class AuthAppController {
 		return tokenProvider.refreshJWTToken(username, userrole, AppUtil.getTokenFromHeader(headers));
 	}
 
+	/*
+	
 	@GetMapping(value = "/api/manage/user/otp/{username}")
 	public int getOTP(@PathVariable String username) {
 		return appService.getOTP(username);
@@ -92,5 +99,5 @@ public class AuthAppController {
 	public int saveUser(@RequestHeader HttpHeaders headers, @RequestBody User user) {
 		return appService.saveUser(user, AppUtil.getLoggedUserFromHeader(headers));
 	}
-
+*/
 }

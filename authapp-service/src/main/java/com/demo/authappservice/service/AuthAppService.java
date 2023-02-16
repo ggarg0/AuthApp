@@ -2,7 +2,6 @@ package com.demo.authappservice.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,12 +11,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.entity.User;
+import com.demo.authappservice.exception.UserNotFoundException;
 import com.demo.authappservice.repository.AuthAppRepository;
-import com.demo.authappservice.util.AppUtil;
 import com.demo.authappservice.util.JwtUtil;
 
 @Service
@@ -33,17 +32,24 @@ public class AuthAppService implements UserDetailsService {
 	OTPService otpService;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	public static final String ADMIN = "ADMIN";
-	public static final String DEVELOPER = "DEVELOPER";
-
-	public List<User> retrieveAllUsers(String team) {
-		return authRepository.retrieveAllUsers(team);
+	
+	public List<User> retrieveAllUsers() {
+		List<User> result = new ArrayList<>();
+		this.authRepository.findAll().forEach(user -> {
+			result.add(user);
+		});
+		return result;
 	}
 
-	public List<User> retrieveUserByRole(String role) {
-		return authRepository.retrieveUserByRole(role);
+	public List<User> loadUserDetails(String username) {
+		List<User> user = this.authRepository.loadUserDetails(username);
+		if (user.isEmpty())
+			throw new UserNotFoundException(MessageConstants.UserNotFound);
+
+		return user;
 	}
 
+	/*
 	public int addNewUser(User newUser) {
 		int result = 0;
 		try {
@@ -146,28 +152,32 @@ public class AuthAppService implements UserDetailsService {
 		}
 		return result;
 	}
-
+	}
+*/
+	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		List<User> userList = authRepository.authenticate(username);
+	public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
+		List<User> userList = new ArrayList<>();
+		// userList=	authRepository.authenticate(username);
 		if (!userList.isEmpty()) {
 			User user = userList.get(0);
 			return user;
 		} else {
 			logger.info("User {} not found", username);
-			throw new UsernameNotFoundException("User not found");
+			throw new UserNotFoundException(MessageConstants.UserNotFound);
 		}
 	}
 
 	public Collection<GrantedAuthority> getGrantedAuthority(User user) {
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
-		if (user.getRole().equalsIgnoreCase(ADMIN)) {
+		if (user.getRole().equalsIgnoreCase(MessageConstants.ADMIN)) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		}
 
-		if (user.getRole().equalsIgnoreCase(DEVELOPER)) {
+		if (user.getRole().equalsIgnoreCase(MessageConstants.DEVELOPER)) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_DEVELOPER"));
 		}
 		return authorities;
 	}
+	
 }

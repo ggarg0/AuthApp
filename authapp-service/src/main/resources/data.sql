@@ -24,7 +24,7 @@
  *
  */
                
-INSERT INTO USERS (firstname, lastname, username, pasword, team, role, approved, active)
+INSERT INTO USERS (firstname, lastname, username, password, team, role, approved, active)
 VALUES ('Adam', 'Sandler', 'adam@gmail.com', '$2a$10$uGibDOMvRoRYggPgRTvOX.dtqqb7sED2V5KJSuNEh6KbKMUcv7uka', 'Team A', 'Admin',1, 1),
 	   ('Brad', 'Pitt', 'brad@gmail.com', '$2a$10$qFG8mxRGv1.xlUD19LvgceJqIsxqkfOPdt7c432yeeGzogTnFjt7i', 'Team B', 'Developer', 1, 1 ),
 	   ('Allan', 'Waugh', 'allan@gmail.com', '$2a$10$4lYJ8iOFJl3VVJOR.ivqVesOsfwXDWKWavGNe9V4gOMVqBuIiBfkS', 'Team A', 'Developer', 0, 1),
