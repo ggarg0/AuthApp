@@ -3,6 +3,7 @@ package com.demo.authappservice.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service;
 import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.entity.User;
 import com.demo.authappservice.exception.UserNotFoundException;
+import com.demo.authappservice.jwt.JwtTokenProvider;
 import com.demo.authappservice.repository.AuthAppRepository;
-import com.demo.authappservice.util.JwtUtil;
 
 @Service
 public class AuthAppService implements UserDetailsService {
@@ -26,7 +27,7 @@ public class AuthAppService implements UserDetailsService {
 	private AuthAppRepository authRepository;
 
 	@Autowired
-	JwtUtil jwtTokenUtils;
+	JwtTokenProvider jwtTokenProvider;
 
 	@Autowired
 	OTPService otpService;
@@ -153,8 +154,7 @@ public class AuthAppService implements UserDetailsService {
 		return result;
 	}
 	}
-*/
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
 		List<User> userList = new ArrayList<>();
@@ -167,17 +167,23 @@ public class AuthAppService implements UserDetailsService {
 			throw new UserNotFoundException(MessageConstants.UserNotFound);
 		}
 	}
+	*/
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
+		Optional<User> userInfo = authRepository.findByUsername(username);
+		return userInfo.orElseThrow(() -> new UserNotFoundException(MessageConstants.UserNotFound + " : " + username));
+
+	}
 
 	public Collection<GrantedAuthority> getGrantedAuthority(User user) {
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
-		if (user.getRole().equalsIgnoreCase(MessageConstants.ADMIN)) {
+		if (user.getRole().equalsIgnoreCase(MessageConstants.ADMIN))
 			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-		}
 
-		if (user.getRole().equalsIgnoreCase(MessageConstants.DEVELOPER)) {
+		if (user.getRole().equalsIgnoreCase(MessageConstants.DEVELOPER))
 			authorities.add(new SimpleGrantedAuthority("ROLE_DEVELOPER"));
-		}
+
 		return authorities;
 	}
-	
 }

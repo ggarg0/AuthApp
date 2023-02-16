@@ -12,10 +12,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "USERS")
-public class User implements UserDetails {
+public class User implements UserDetails{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +29,9 @@ public class User implements UserDetails {
 	private String role;
 	private String approved;
 	private String active;
+	@Transient
 	private String otp;
+	@Transient
 	private String message;
 
 	@Override
@@ -63,7 +66,7 @@ public class User implements UserDetails {
 		return lastname;
 	}
 
-	public String getUserName() {
+	public String getUsername() {
 		return username;
 	}
 
@@ -103,7 +106,7 @@ public class User implements UserDetails {
 		this.lastname = lastname;
 	}
 
-	public void setUserName(String username) {
+	public void setUsername(String username) {
 		this.username = username;
 	}
 
@@ -136,8 +139,8 @@ public class User implements UserDetails {
 	}
 
 	@Override
-	public String getUsername() {
-		return username;
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(getRole().toUpperCase())));
 	}
 
 	@Override
@@ -158,10 +161,5 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
-	}
-
-	@Override
-	public Collection<GrantedAuthority> getAuthorities() {
-		return Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(getRole().toUpperCase())));
 	}
 }

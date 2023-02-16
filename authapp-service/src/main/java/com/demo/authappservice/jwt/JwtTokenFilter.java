@@ -5,10 +5,14 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.demo.authappservice.service.AuthAppService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -23,6 +27,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private JwtTokenProvider tokenProvider;
+
+	@Autowired
+	private AuthAppService appService;
 
 	public JwtTokenFilter(JwtTokenProvider tokenProvider) {
 		this.tokenProvider = tokenProvider;
@@ -42,24 +49,25 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		response.setHeader("Access-Control-Allow-Headers",
 				"Access-Control-Allow-Headers, Origin, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Accept, X-Requested-With, remember-me, Authorization, Username, Role");
 
-		String username = request.getHeader("Username");
+		String usernameFromHeader = request.getHeader("Username");
 
 		try {
 			final String auth = request.getHeader("Authorization");
 			final String token = auth == null || auth.contains("null") ? null : auth.split(" ", 2)[1];
-			if (null != token && !tokenProvider.isTokenExpired(token)) {
-				Authentication authentication = tokenProvider
-						.getAuthentication(tokenProvider.getClaimsFromToken(token).getSubject());
-
-				if (authentication.isAuthenticated()) {
-					SecurityContextHolder.getContext().setAuthentication(authentication);
-					if (logRequestedURL(request)) {
-						if (username != null) {
-							logger.info("JwtTokenFilter : User {} and requested url : {}",
-									authentication.getPrincipal().toString(), request.getRequestURL());
-						} else {
-							logger.info("JwtTokenFilter : User {} and requested url from API: {}",
-									authentication.getPrincipal().toString(), request.getRequestURL());
+			if (null != token && null != usernameFromHeader) {
+				UserDetails userDetails = appService.loadUserByUsername(tokenProvider.extractUsername(token));
+				if (tokenProvider.validateToken(token, usernameFromHeader, userDetails)) {
+					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+							userDetails, null, userDetails.getAuthorities());
+					if (usernamePasswordAuthenticationToken.isAuthenticated()) {
+						usernamePasswordAuthenticationToken
+								.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+						SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+						if (logRequestedURL(request)) {
+							if (userDetails.getUsername() != null) {
+								logger.info("JwtTokenFilter : User {} and requested url : {}",
+										tokenProvider.extractUsername(token), request.getRequestURL());
+							}
 						}
 					}
 				}
@@ -67,10 +75,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		} catch (Exception e) {
 			SecurityContextHolder.clearContext();
 			if (e instanceof ExpiredJwtException) {
-				logger.error("Session expired for user {}", username);
+				logger.error("Session expired for user {}", usernameFromHeader);
 				((HttpServletResponse) res).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			} else {
-				logger.error("Invalid token for user {} with exception as {} ", username, e.getMessage());
+				logger.error("Invalid token for user {} with exception as {} ", usernameFromHeader, e.getMessage());
 				((HttpServletResponse) res).setStatus(HttpServletResponse.SC_FORBIDDEN);
 			}
 			return;
@@ -86,4 +94,3 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		return result;
 	}
 }
-

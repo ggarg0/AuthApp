@@ -1,6 +1,7 @@
 package com.demo.authappservice.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,6 +17,7 @@ public interface AuthAppRepository extends CrudRepository<User, Integer> {
 	@Query("SELECT u FROM User u WHERE u.username = :username")
 	List<User> loadUserDetails(@Param("username") String username);
 
+	Optional<User> findByUsername(String username);
 	
 	//public List<User> authenticate(String username) ;
 	/*
