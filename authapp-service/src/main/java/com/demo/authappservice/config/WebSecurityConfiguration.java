@@ -1,5 +1,6 @@
 package com.demo.authappservice.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,10 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import com.demo.authappservice.jwt.JwtTokenFilter;
 import com.demo.authappservice.service.AuthAppService;
 
 @Configuration
@@ -25,6 +28,9 @@ import com.demo.authappservice.service.AuthAppService;
 @EnableMethodSecurity
 public class WebSecurityConfiguration {
 
+	@Autowired
+	JwtTokenFilter jwtTokenFilter;
+	
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new AuthAppService();
@@ -33,17 +39,18 @@ public class WebSecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable()
+				.securityMatcher("/api/**") 
+				.authorizeHttpRequests(authorize -> authorize						
+						.requestMatchers("/api/admin/**", "/api/manage/**").hasRole("ADMIN")       
+						.requestMatchers("/api/dev/**").hasAnyRole("ADMIN", "DEVELOPER")    
+						.requestMatchers("/api/user/**", "/api/refreshjwttoken/**").permitAll() 
+						.anyRequest().authenticated()                      
+					)
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authorizeHttpRequests()
-				.requestMatchers("/**").permitAll()
-				.requestMatchers("/h2-console/**").permitAll()
-				.requestMatchers("/api/user/**").permitAll()
-				.requestMatchers("/api/refreshjwttoken/**").hasAnyRole("USER", "ADMIN")
-				.requestMatchers("/api/admin/**").hasRole("ADMIN")
-				.requestMatchers("/api/dev/**").hasRole("USER")
-				.anyRequest().authenticated().and().build();
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 	}
-
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -73,6 +80,5 @@ public class WebSecurityConfiguration {
 		config.addAllowedMethod("*");
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
-	}
-	
+	}	
 }

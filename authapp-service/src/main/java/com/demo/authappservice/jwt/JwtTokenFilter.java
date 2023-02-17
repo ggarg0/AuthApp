@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.service.AuthAppService;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -41,36 +42,40 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-
+/*
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers",
 				"Access-Control-Allow-Headers, Origin, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Accept, X-Requested-With, remember-me, Authorization, Username, Role");
-
+*/
 		String usernameFromHeader = request.getHeader("Username");
 
 		try {
 			final String auth = request.getHeader("Authorization");
 			final String token = auth == null || auth.contains("null") ? null : auth.split(" ", 2)[1];
-			if (null != token && null != usernameFromHeader) {
+			if (null != token && null != usernameFromHeader && !tokenProvider.isTokenExpired(token)
+					&& SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = appService.loadUserByUsername(tokenProvider.extractUsername(token));
-				if (tokenProvider.validateToken(token, usernameFromHeader, userDetails)) {
-					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-							userDetails, null, userDetails.getAuthorities());
-					if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-						usernamePasswordAuthenticationToken
-								.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-						SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-						if (logRequestedURL(request)) {
-							if (userDetails.getUsername() != null) {
-								logger.info("JwtTokenFilter : User {} and requested url : {}",
-										tokenProvider.extractUsername(token), request.getRequestURL());
-							}
+
+				if (!(userDetails != null && usernameFromHeader.equalsIgnoreCase(userDetails.getUsername())))
+					throw new Exception(MessageConstants.UsernameMismatchFound);
+
+				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+						userDetails, null, userDetails.getAuthorities());
+				if (usernamePasswordAuthenticationToken.isAuthenticated()) {
+					usernamePasswordAuthenticationToken
+							.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+					if (logRequestedURL(request)) {
+						if (userDetails.getUsername() != null) {
+							logger.info("JwtTokenFilter : User {} and requested url : {}",
+									tokenProvider.extractUsername(token), request.getRequestURL());
 						}
 					}
 				}
+
 			}
 		} catch (Exception e) {
 			SecurityContextHolder.clearContext();

@@ -25,33 +25,33 @@ import com.demo.authappservice.util.AppUtil;
 @CrossOrigin("*")
 @RestController
 public class AuthAppController {
-	
+
 	@Autowired
-	private AuthAppService appService;	
+	private AuthAppService appService;
 
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
-	
+
 	@Autowired
-	private AuthenticationManager authenticationManager;	
-	
+	private AuthenticationManager authenticationManager;
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping("/api/admin/loadallusers")
 	public List<User> retrieveAllUsers() {
 		return appService.retrieveAllUsers();
 	}
-	
+
 	@GetMapping(value = "/api/dev/loaduser")
 	public List<User> loadUserDetails(@RequestHeader HttpHeaders headers) {
 		return appService.loadUserDetails(AppUtil.getLoggedUserFromHeader(headers));
-	}	
-	
+	}
+
 	@PostMapping(value = "/api/user/authenticate")
 	public List<User> authenticate(@RequestBody User user) {
 		List<User> userList = new ArrayList<User>();
 		try {
-		Authentication authentication = authenticationManager
+			Authentication authentication = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 			if (authentication.isAuthenticated()) {
 				User userAuth = (User) authentication.getPrincipal();
@@ -66,32 +66,29 @@ public class AuthAppController {
 		return userList;
 	}
 	/*
-	@GetMapping(value = "/api/user/refreshjwttoken/{username}/{userrole}")
-	public List<String> refreshJWTToken(@RequestHeader HttpHeaders headers, @PathVariable String username,
-			@PathVariable String userrole) {
-		return tokenProvider.refreshJWTToken(username, userrole, AppUtil.getTokenFromHeader(headers));
-	}
-
-	
-	
-	@GetMapping(value = "/api/user/otp/{username}")
-	public int getOTP(@PathVariable String username) {
-		return appService.getOTP(username);
-	}
-
-	@PostMapping(value = "/api/manage/user/resetpassword")
-	public int resetPassword(@RequestBody User resetUser) {
-		return appService.resetPassword(resetUser);
-	}
-
-	@PostMapping(value = "/api/user/adduser")
-	public int addNewUser(@RequestHeader HttpHeaders headers, @RequestBody User newUser) {
-		return appService.addNewUser(newUser);
-	}
-
-	@PutMapping(value = "/api/user/save")
-	public int saveUser(@RequestHeader HttpHeaders headers, @RequestBody User user) {
-		return appService.saveUser(user, AppUtil.getLoggedUserFromHeader(headers));
-	}
-*/
+	 * @GetMapping(value = "/api/user/refreshjwttoken/{username}/{userrole}") public
+	 * List<String> refreshJWTToken(@RequestHeader HttpHeaders
+	 * headers, @PathVariable String username,
+	 * 
+	 * @PathVariable String userrole) { return
+	 * tokenProvider.refreshJWTToken(username, userrole,
+	 * AppUtil.getTokenFromHeader(headers)); }
+	 * 
+	 * 
+	 * 
+	 * @GetMapping(value = "/api/user/otp/{username}") public int
+	 * getOTP(@PathVariable String username) { return appService.getOTP(username); }
+	 * 
+	 * @PostMapping(value = "/api/user/resetpassword") public int
+	 * resetPassword(@RequestBody User resetUser) { return
+	 * appService.resetPassword(resetUser); }
+	 * 
+	 * @PostMapping(value = "/api/manage/adduser") public int
+	 * addNewUser(@RequestHeader HttpHeaders headers, @RequestBody User newUser) {
+	 * return appService.addNewUser(newUser); }
+	 * 
+	 * @PutMapping(value = "/api/manage/save") public int saveUser(@RequestHeader
+	 * HttpHeaders headers, @RequestBody User user) { return
+	 * appService.saveUser(user, AppUtil.getLoggedUserFromHeader(headers)); }
+	 */
 }
