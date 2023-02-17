@@ -49,7 +49,7 @@ public class AppUtil {
 	public static void sendMail(String toMailId, String ccMailId, String mailSubject, String mailBody,
 			boolean sendToAdmin, boolean isHTMLContent) {
 		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.kronos.com");
+		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.auth", "true");
 		Session session = null;
 
