@@ -12,7 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,7 +58,7 @@ public class AuthAppController {
 			if (authentication.isAuthenticated()) {
 				User userAuth = (User) authentication.getPrincipal();
 				userAuth.setPassword("");
-				userAuth.setMessage(jwtTokenProvider.createToken(userAuth.getUsername(), userAuth.getRole()));
+				userAuth.setMessage(jwtTokenProvider.createToken(userAuth.getUsername()));
 				userList.add(userAuth);
 				logger.info("User {} login as {}", userAuth.getUsername(), userAuth.getRole());
 			}
@@ -65,27 +67,25 @@ public class AuthAppController {
 		}
 		return userList;
 	}
+
+	@GetMapping(value = "/api/user/refreshjwttoken")
+	public String refreshJWTToken(@RequestHeader HttpHeaders headers, String username) {
+		return jwtTokenProvider.refreshJWTToken(username, AppUtil.getTokenFromHeader(headers));
+	}
+
+	@GetMapping(value = "/api/user/otp")
+	public int getOTP(String username) {
+		return appService.getOTP(username);
+	}
+
+	@PostMapping(value = "/api/user/adduser")
+	public String addNewUser(@RequestHeader HttpHeaders headers, @RequestBody User newUser) {
+		return appService.addNewUser(newUser);
+	}
 	/*
-	 * @GetMapping(value = "/api/user/refreshjwttoken/{username}/{userrole}") public
-	 * List<String> refreshJWTToken(@RequestHeader HttpHeaders
-	 * headers, @PathVariable String username,
-	 * 
-	 * @PathVariable String userrole) { return
-	 * tokenProvider.refreshJWTToken(username, userrole,
-	 * AppUtil.getTokenFromHeader(headers)); }
-	 * 
-	 * 
-	 * 
-	 * @GetMapping(value = "/api/user/otp/{username}") public int
-	 * getOTP(@PathVariable String username) { return appService.getOTP(username); }
-	 * 
 	 * @PostMapping(value = "/api/user/resetpassword") public int
 	 * resetPassword(@RequestBody User resetUser) { return
 	 * appService.resetPassword(resetUser); }
-	 * 
-	 * @PostMapping(value = "/api/manage/adduser") public int
-	 * addNewUser(@RequestHeader HttpHeaders headers, @RequestBody User newUser) {
-	 * return appService.addNewUser(newUser); }
 	 * 
 	 * @PutMapping(value = "/api/manage/save") public int saveUser(@RequestHeader
 	 * HttpHeaders headers, @RequestBody User user) { return

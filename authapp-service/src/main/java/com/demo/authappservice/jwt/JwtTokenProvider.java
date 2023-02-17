@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -27,8 +28,8 @@ public class JwtTokenProvider {
 
 	private Key secret;
 
-	public String generateToken(String user, String role) {
-		return createToken(user, role);
+	public String generateToken(String user) {
+		return createToken(user);
 	}
 
 	private Key getSigningKey() {
@@ -38,10 +39,8 @@ public class JwtTokenProvider {
 		return secret;
 	}
 
-	public String createToken(String username, String role) {
+	public String createToken(String username) {
 		Claims claims = Jwts.claims().setSubject(username);
-		claims.put("auth", role);
-
 		return Jwts.builder().setClaims(claims).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + validityInMilliseconds)).signWith(getSigningKey())
 				.compact();
@@ -65,15 +64,15 @@ public class JwtTokenProvider {
 		return claimsResolver.apply(claims);
 	}
 
-	public List<String> refreshJWTToken(String username, String userrole, String tokenFromHeader) {
-		List<String> refreshToken = new ArrayList<String>();
+	public String refreshJWTToken(String username, String tokenFromHeader) {
+		String refreshToken = "";
 		try {
 			long differenceInMinutes = (extractExpiration(tokenFromHeader).getTime() - new Date().getTime()) / 60000;
 			if (differenceInMinutes < 15) {
-				refreshToken.add(createToken(username, userrole));
+				refreshToken = createToken(username);
 				logger.info("JWT token refresh for " + username);
 			} else {
-				refreshToken.add(tokenFromHeader);
+				refreshToken = tokenFromHeader;
 			}
 		} catch (Exception e) {
 			logger.error("JWT token refresh for " + username + " : Exception - " + e.getMessage());
@@ -86,6 +85,10 @@ public class JwtTokenProvider {
 	}
 
 	public String extractUsername(String token) {
+		return extractClaim(token, Claims::getSubject);
+	}
+
+	public String extractUserrole(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
 

@@ -36,7 +36,7 @@ public class User implements UserDetails{
 
 	@Override
 	public String toString() {
-		return "User [firstName=" + firstname + ", lastname=" + lastname + ", username=" + username + "" + ", team="
+		return "User [firstname=" + firstname + ", lastname=" + lastname + ", username=" + username + "" + ", team="
 				+ team + ", role=" + role + ", approved=" + approved + ", active=" + active + "]";
 	}
 
@@ -58,11 +58,11 @@ public class User implements UserDetails{
 		this.message = message;
 	}
 
-	public String getFirstName() {
+	public String getFirstname() {
 		return firstname;
 	}
 
-	public String getLastName() {
+	public String getLastname() {
 		return lastname;
 	}
 
@@ -98,11 +98,11 @@ public class User implements UserDetails{
 		return message;
 	}
 
-	public void setFirstName(String firstname) {
+	public void setFirstname(String firstname) {
 		this.firstname = firstname;
 	}
 
-	public void setLastName(String lastname) {
+	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
 
