@@ -60,7 +60,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 				UserDetails userDetails = appService.loadUserByUsername(tokenProvider.extractUsername(token));
 
 				if (!(userDetails != null && usernameFromHeader.equalsIgnoreCase(userDetails.getUsername())))
-					throw new Exception(MessageConstants.UsernameMismatchFound);
+					throw new Exception(userDetails.getUsername() + " " + MessageConstants.JWTUsernameMismatchFound);
 
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
@@ -75,7 +75,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 						}
 					}
 				}
-
 			}
 		} catch (Exception e) {
 			SecurityContextHolder.clearContext();
@@ -83,7 +82,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 				logger.error("Session expired for user {}", usernameFromHeader);
 				((HttpServletResponse) res).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			} else {
-				logger.error("Invalid token for user {} with exception as {} ", usernameFromHeader, e.getMessage());
+				logger.error("User {} invalid token exception : {} ", usernameFromHeader, e.getMessage());
 				((HttpServletResponse) res).setStatus(HttpServletResponse.SC_FORBIDDEN);
 			}
 			return;

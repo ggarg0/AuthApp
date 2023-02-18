@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.demo.authappservice.constant.MessageConstants;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,10 +30,6 @@ public class JwtTokenProvider {
 
 	private Key secret;
 
-	public String generateToken(String user) {
-		return createToken(user);
-	}
-
 	private Key getSigningKey() {
 		if (secret == null) {
 			secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
@@ -39,7 +37,7 @@ public class JwtTokenProvider {
 		return secret;
 	}
 
-	public String createToken(String username) {
+	public String generateToken(String username) {
 		Claims claims = Jwts.claims().setSubject(username);
 		return Jwts.builder().setClaims(claims).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + validityInMilliseconds)).signWith(getSigningKey())
@@ -64,15 +62,19 @@ public class JwtTokenProvider {
 		return claimsResolver.apply(claims);
 	}
 
-	public String refreshJWTToken(String username, String tokenFromHeader) {
+	public String refreshJWTToken(String username, String tokenFromHeader, String forceRefresh) {
 		String refreshToken = "";
-		try {
+		try {			
+			
+			if (MessageConstants.YES.equalsIgnoreCase(forceRefresh)) 
+				return generateToken(username);
+			
 			long differenceInMinutes = (extractExpiration(tokenFromHeader).getTime() - new Date().getTime()) / 60000;
 			if (differenceInMinutes < 15) {
-				refreshToken = createToken(username);
 				logger.info("JWT token refresh for " + username);
+				return generateToken(username);
 			} else {
-				refreshToken = tokenFromHeader;
+				return tokenFromHeader;
 			}
 		} catch (Exception e) {
 			logger.error("JWT token refresh for " + username + " : Exception - " + e.getMessage());
