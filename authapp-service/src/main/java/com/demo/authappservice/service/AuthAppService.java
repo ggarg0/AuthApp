@@ -2,7 +2,6 @@ package com.demo.authappservice.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +21,6 @@ import com.demo.authappservice.entity.User;
 import com.demo.authappservice.exception.UserNotFoundException;
 import com.demo.authappservice.jwt.JwtTokenProvider;
 import com.demo.authappservice.repository.AuthAppRepository;
-import com.demo.authappservice.util.AppUtil;
 
 @Service
 public class AuthAppService implements UserDetailsService {
@@ -52,6 +50,10 @@ public class AuthAppService implements UserDetailsService {
 			throw new UserNotFoundException(MessageConstants.UserNotFound);
 
 		return user;
+	}
+	
+	public List<String> loadDataType(String type) {
+		return authRepository.loadDataType(type);
 	}
 
 	public String addNewUser(User newUser) {

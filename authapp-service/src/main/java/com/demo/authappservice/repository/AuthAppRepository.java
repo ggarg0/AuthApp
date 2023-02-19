@@ -17,6 +17,9 @@ public interface AuthAppRepository extends CrudRepository<User, Integer> {
 	@Query("SELECT u FROM User u WHERE u.username = :username")
 	User loadUserDetails(@Param("username") String username);
 	
+	@Query("SELECT d FROM LOADDATA d WHERE d.datatype = :datatype")
+	List<String> loadDataType(@Param("datatype") String datatype);
+	
 	@Query("SELECT u FROM User u WHERE u.role = :role")
 	List<User> loadUserByRole(@Param("role") String role);
 

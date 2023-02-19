@@ -43,6 +43,11 @@ public class AuthAppController {
 	public List<User> retrieveAllUsers() {
 		return appService.retrieveAllUsers();
 	}
+	
+	@GetMapping("/api/loaddata/{type}")
+	public List<String> loadDataType(String dataType) {
+		return appService.loadDataType(dataType);
+	}
 
 	@GetMapping(value = "/api/dev/loaduser")
 	public User loadUserDetails(@RequestHeader HttpHeaders headers) {
