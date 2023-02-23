@@ -21,15 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.authappservice.entity.User;
 import com.demo.authappservice.jwt.JwtTokenProvider;
-import com.demo.authappservice.service.AuthAppService;
+import com.demo.authappservice.service.UserService;
 import com.demo.authappservice.util.AppUtil;
 
 @CrossOrigin("*")
 @RestController
-public class AuthAppController {
+public class UserController {
 
 	@Autowired
-	private AuthAppService appService;
+	private UserService userService;
 
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
@@ -39,19 +39,9 @@ public class AuthAppController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@GetMapping("/api/admin/loadallusers")
-	public List<User> retrieveAllUsers() {
-		return appService.retrieveAllUsers();
-	}
-	
-	@GetMapping("/api/loaddata/{type}")
-	public List<String> loadDataType(String dataType) {
-		return appService.loadDataType(dataType);
-	}
-
 	@GetMapping(value = "/api/dev/loaduser")
 	public User loadUserDetails(@RequestHeader HttpHeaders headers) {
-		return appService.loadUserDetails(AppUtil.getLoggedUserFromHeader(headers));
+		return userService.loadUserDetails(AppUtil.getLoggedUserFromHeader(headers));
 	}
 
 	@PostMapping(value = "/api/user/authenticate")
@@ -80,27 +70,27 @@ public class AuthAppController {
 
 	@GetMapping(value = "/api/user/otp")
 	public int getOTP(String username) {
-		return appService.getOTP(username);
+		return userService.getOTP(username);
 	}
 
 	@PostMapping(value = "/api/user/adduser")
 	public String addNewUser(@RequestHeader HttpHeaders headers, @RequestBody User newUser) {
-		return appService.addNewUser(newUser);
+		return userService.addNewUser(newUser);
 	}
 
 	@PostMapping(value = "/api/user/resetpassword")
 	public String resetPassword(@RequestBody User resetUser) {
-		return appService.resetPassword(resetUser);
+		return userService.resetPassword(resetUser);
 	}
 
 	@PutMapping(value = "/api/manage/user/save")
 	public String saveUser(@RequestHeader HttpHeaders headers, @RequestBody User user) {
-		return appService.saveUser(user, AppUtil.getLoggedUserFromHeader(headers));
+		return userService.saveUser(user, AppUtil.getLoggedUserFromHeader(headers));
 	}
 	
 	@DeleteMapping(value = "/api/manage/user/delete")
 	public String deleteUser(@RequestHeader HttpHeaders headers, @RequestBody User user) {
-		return appService.deleteUser(user, AppUtil.getLoggedUserFromHeader(headers));
+		return userService.deleteUser(user, AppUtil.getLoggedUserFromHeader(headers));
 	}
 
 }

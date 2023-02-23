@@ -3,6 +3,7 @@ package com.demo.authappservice.entity;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,8 @@ public class User implements UserDetails {
 	private Long userid;
 	private String firstname;
 	private String lastname;
+
+	@Unique
 	private String username;
 	private String password;
 	private String team;
@@ -100,6 +103,14 @@ public class User implements UserDetails {
 
 	public String getMessage() {
 		return message;
+	}
+
+	public Long getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Long userid) {
+		this.userid = userid;
 	}
 
 	public void setFirstname(String firstname) {

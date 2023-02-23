@@ -39,9 +39,3 @@ CREATE TABLE USERS (
 
 ALTER TABLE USERS ADD CONSTRAINT username_unique UNIQUE(username);
 
-DROP TABLE IF EXISTS LOADDATA;
-
-CREATE TABLE LOADDATA (
-               DATATYPE VARCHAR(100) NOT NULL,
-               DATAVALUE VARCHAR(100) NOT NULL                                 
-);

@@ -12,9 +12,11 @@ export class DataService {
     private _snackBar: MatSnackBar,
     private _router: Router
   ) {
-    if (this.teamListForSignUp.length == 0) this.loadTeamListForSignUp();
+    if (this.teamListForSignUp.length == 0)
+      this.loadTeamListForSignUp();
 
-    if (this.roleListForSignUp.length == 0) this.loadRoleListForSignUp();
+    if (this.roleListForSignUp.length == 0)
+      this.loadRoleListForSignUp();
   }
 
   apiURL = 'http://localhost:8888/api/';
@@ -38,9 +40,9 @@ export class DataService {
 
   async loadTeamListForSignUp() {
     this.teamListForSignUp.length = 0;
-    const url = this.apiURL + 'loaddata/Signupteam';
+    const url = this.apiURL + 'loaddata';
     axios
-      .get(url)
+      .get(url, { params: { datatype: 'Team' }})
       .then(async (response) => {
         let json = await response.data;
         for (var data in json) {
@@ -54,9 +56,9 @@ export class DataService {
 
   async loadRoleListForSignUp() {
     this.roleListForSignUp.length = 0;
-    const url = this.apiURL + 'loaddata/Role';
+    const url = this.apiURL + 'loaddata';
     axios
-      .get(url)
+      .get(url, { params: { datatype: 'Role' }})
       .then(async (response) => {
         let json = await response.data;
         for (var data in json) {

@@ -20,14 +20,14 @@ import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.entity.User;
 import com.demo.authappservice.exception.UserNotFoundException;
 import com.demo.authappservice.jwt.JwtTokenProvider;
-import com.demo.authappservice.repository.AuthAppRepository;
+import com.demo.authappservice.repository.UserRepository;
 
 @Service
-public class AuthAppService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
-	private AuthAppRepository authRepository;
-
+	private UserRepository userRepository;
+	
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
 
@@ -38,22 +38,18 @@ public class AuthAppService implements UserDetailsService {
 
 	public List<User> retrieveAllUsers() {
 		List<User> result = new ArrayList<>();
-		this.authRepository.findAll().forEach(user -> {
+		this.userRepository.findAll().forEach(user -> {
 			result.add(user);
 		});
 		return result;
 	}
 
 	public User loadUserDetails(String username) {
-		User user = this.authRepository.loadUserDetails(username);
+		User user = this.userRepository.loadUserDetails(username);
 		if (user == null)
 			throw new UserNotFoundException(MessageConstants.UserNotFound);
 
 		return user;
-	}
-	
-	public List<String> loadDataType(String type) {
-		return authRepository.loadDataType(type);
 	}
 
 	public String addNewUser(User newUser) {
@@ -72,7 +68,7 @@ public class AuthAppService implements UserDetailsService {
 					newUser.setApproved("1");
 
 				newUser.setActive("1");
-				User user = authRepository.save(newUser);
+				User user = userRepository.save(newUser);
 
 				if (user.getApproved().equals("1")) {
 					String messageBody = "Hello " + user.getFirstname() + " " + user.getLastname() + ",\n\n"
@@ -81,7 +77,7 @@ public class AuthAppService implements UserDetailsService {
 					// AppUtil.sendMail(user.getUsername(), null, "New user request", messageBody,
 					// true, false);
 				} else {
-					for (User admin : authRepository.loadUserByRole(MessageConstants.ADMIN))
+					for (User admin : userRepository.loadUserByRole(MessageConstants.ADMIN))
 						adminUser.add(admin.getUsername());
 
 					String messageBody = "Hello, \n\n" + user.getFirstname() + " " + user.getLastname()
@@ -121,14 +117,14 @@ public class AuthAppService implements UserDetailsService {
 	public String saveUser(User userDetails, String loggedUser) {
 		String result = "";
 		try {
-			User user = authRepository.loadUserDetails(userDetails.getUsername());
+			User user = userRepository.loadUserDetails(userDetails.getUsername());
 			user.setFirstname(userDetails.getFirstname());
 			user.setLastname(userDetails.getLastname());
 			user.setTeam(userDetails.getTeam());
 			user.setRole(userDetails.getRole());
 			user.setActive(userDetails.getActive());
 			user.setApproved(userDetails.getApproved());
-			authRepository.save(user);
+			userRepository.save(user);
 
 			String messageBody = "Hello," + " \n\nAccess request for application has been modified:" + "\n\nRole : "
 					+ user.getRole() + "\nApproved : " + user.getApproved() + "\nActive : " + user.getActive()
@@ -150,8 +146,8 @@ public class AuthAppService implements UserDetailsService {
 	public String deleteUser(User userDetails, String loggedUser) {
 		String result = "";
 		try {
-			User user = authRepository.loadUserDetails(userDetails.getUsername());
-			authRepository.delete(user);
+			User user = userRepository.loadUserDetails(userDetails.getUsername());
+			userRepository.delete(user);
 			String messageBody = "Hello," + " \n\nAccess request for application has been modified:" + "\n\nRole : "
 					+ user.getRole() + "\nApproved : " + user.getApproved() + "\nActive : " + user.getActive()
 					+ "\nTeam : " + user.getTeam() + "\n\nThanks";
@@ -174,9 +170,9 @@ public class AuthAppService implements UserDetailsService {
 					&& otpService.getOtp(resetUser.getUsername()) == Integer.parseInt(resetUser.getOTP())) {
 				logger.info("User reset password request for " + resetUser.getUsername());
 
-				User user = authRepository.loadUserDetails(resetUser.getUsername());
+				User user = userRepository.loadUserDetails(resetUser.getUsername());
 				user.setPassword(resetUser.getPassword());
-				authRepository.save(user);
+				userRepository.save(user);
 
 				if (user != null) {
 					String messageBody = "Hello " + user.getUsername() + ",\n\n"
@@ -205,7 +201,7 @@ public class AuthAppService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
-		Optional<User> userInfo = authRepository.findByUsername(username);
+		Optional<User> userInfo = userRepository.findByUsername(username);
 		return userInfo.orElseThrow(() -> new UserNotFoundException(MessageConstants.UserNotFound + " : " + username));
 
 	}

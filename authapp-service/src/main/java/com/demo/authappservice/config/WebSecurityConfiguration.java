@@ -21,7 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.demo.authappservice.jwt.JwtTokenFilter;
-import com.demo.authappservice.service.AuthAppService;
+import com.demo.authappservice.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +34,7 @@ public class WebSecurityConfiguration {
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new AuthAppService();
+		return new UserService();
 	}
 
 	@Bean
@@ -70,15 +71,5 @@ public class WebSecurityConfiguration {
 		return authenticationProvider;
 	}
 	
-	@Bean
-	public CorsFilter corsFilter() {
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.addAllowedOrigin("*");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("*");
-		source.registerCorsConfiguration("/**", config);
-		return new CorsFilter(source);
-	}	
+
 }

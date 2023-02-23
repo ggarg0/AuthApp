@@ -25,7 +25,7 @@ export class ResetPasswordComponent {
   ) {}
 
   userForm: FormGroup = new FormGroup({
-    userName: new FormControl('', Validators.required),
+    username: new FormControl('', Validators.required),
     otp: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
   });
@@ -38,7 +38,7 @@ export class ResetPasswordComponent {
 
   resetForm(resetForm: any) {
     if (
-      resetForm.value.userName.length === 0 &&
+      resetForm.value.username.length === 0 &&
       resetForm.value.otp.length === 0 &&
       resetForm.value.password.length === 0
     ) {
@@ -58,10 +58,10 @@ export class ResetPasswordComponent {
     this.resetUserPassword(resetForm.value);
   }
 
-  GetOTP(resetForm : any) {
-    this._auth.getOTP(resetForm.value.userName).subscribe(
-      (res) => {
-        if (res === 0) {
+  GetOTP(resetForm: any) {
+    this._auth.getOTP(resetForm.value.username).subscribe({
+      next: (response) => {
+        if (response === '') {
           this.dataService.openSnackBarWithDuration(
             'OTP not generated. Please contact administrator',
             'Close',
@@ -75,7 +75,7 @@ export class ResetPasswordComponent {
           );
         }
       },
-      (err) => {
+      error: (err) => {
         if (err.status === 404) {
           this.dataService.openSnackBarWithDuration(
             'Invalid username',
@@ -89,8 +89,16 @@ export class ResetPasswordComponent {
             this.dataService.snackbarduration
           );
         }
-      }
-    );
+      },
+    });
+  }
+
+
+  GetOTP1(resetForm: any) {
+    const res = [];
+    this._auth.getOTP(resetForm.value.username).subscribe((res)=>{
+      console.log(res);
+  });
   }
 
   resetUserPassword(resetUser: User) {

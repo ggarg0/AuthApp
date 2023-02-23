@@ -6,22 +6,28 @@ import { AuthService } from './auth.service';
 export class TokenInterceptorService implements HttpInterceptor {
   constructor(private injector: Injector) {}
   intercept(req: any, next: any) {
-    let user;
-    let role;
+    let user: any;
+    let role: any;
 
     let authService = this.injector.get(AuthService);
 
-    if (!(authService.getLoggedInUsername() === null))
-      user = authService.getLoggedInUsername();
+    user = authService.getLoggedInUsername();
+    console.log(user);
 
-    if (!(authService.getRole() === null)) role = authService.getRole();
+    role = authService.getRole();
+    console.log(role);
 
-    let tokenizedReq = req.clone({
-      headers: req.headers
-        .set('Authorization', 'Bearer ' + authService.getToken())
-        .set('Username', user)
-        .set('Role', role),
-    });
-    return next.handle(tokenizedReq);
+
+
+
+      let tokenizedReq = req.clone({
+        headers: req.headers
+          .set('Authorization', 'Bearer ' + authService.getToken())
+          .set('Username', user)
+          .set('Role', role),
+      });
+      console.log(tokenizedReq);
+      return next.handle(tokenizedReq);
+
   }
 }

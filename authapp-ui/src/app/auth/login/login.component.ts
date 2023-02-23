@@ -64,11 +64,11 @@ export class LoginComponent {
   }
 
   authenticate(user: User) {
-    localStorage.setItem('Username', user.userName);
+    localStorage.setItem('Username', user.username);
     this._auth.authenticateUser(user).subscribe(
       (res) => {
         if (localStorage.getItem('Username') === null) {
-          localStorage.setItem('Username', user.userName);
+          localStorage.setItem('Username', user.username);
         }
 
         if (res.length != 0 && res[0].message.includes('valid')) {

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { DataService } from '../data.service';
 import { Role } from '../data.model';
 import { User } from '../dataClass';
+import { Observable, retry, catchError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -34,11 +35,17 @@ export class AuthService {
     );
   }
 
-  getOTP(userName: string) {
-    return this.http.get<any>(
-      this.dataService.apiURL + 'manage/user/otp/' + userName
-    );
+  getOTP(username: string): Observable<string> {
+    let params = new HttpParams();
+    const url = this.dataService.apiURL + 'user/otp';
+    console.log('username ; ' + url);
+    params = params.append('username', username + '');
+    console.log('url ; ' + params);
+
+    return this.http
+      .get<string>(url, { params: params });
   }
+
 
   refreshJWTToken() {
     if (this.getLoggedInUsername() != null) {
@@ -87,10 +94,6 @@ export class AuthService {
 
   getToken() {
     return localStorage.getItem('JWTToken');
-  }
-
-  isManager() {
-    return localStorage.getItem('Role') === Role.Manager;
   }
 
   isDeveloper() {

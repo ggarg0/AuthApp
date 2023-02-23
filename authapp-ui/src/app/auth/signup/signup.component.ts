@@ -31,9 +31,9 @@ export class SignupComponent {
   roleFromDropDown = this.roleList[0];
 
   userForm: FormGroup = new FormGroup({
-    firstName: new FormControl('', Validators.required),
-    lastName: new FormControl(''),
-    userName: new FormControl('', Validators.required),
+    firstname: new FormControl('', Validators.required),
+    lastname: new FormControl(''),
+    username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
     team: new FormControl('', Validators.required),
     role: new FormControl('', Validators.required),
@@ -76,7 +76,7 @@ export class SignupComponent {
           );
         } else if (res === -1) {
           this.dataService.openSnackBarWithDuration(
-            'User ' + newUser.userName + ' already exists',
+            'User ' + newUser.username + ' already exists',
             'Close',
             this.dataService.snackbarduration
           );
@@ -100,9 +100,9 @@ export class SignupComponent {
   }
 
   GetOTP(signupForm: any) {
-    this._auth.getOTP(signupForm.value.userName).subscribe(
+    this._auth.getOTP(signupForm.value.username).subscribe(
       (res) => {
-        if (res === 0) {
+        if (res === '') {
           this.dataService.openSnackBarWithDuration(
             'OTP not generated. Please contact administrator',
             'Close',
