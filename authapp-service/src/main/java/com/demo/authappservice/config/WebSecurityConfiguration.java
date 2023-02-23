@@ -33,7 +33,6 @@ public class WebSecurityConfiguration {
 	
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return new AuthAppService();
 		return new UserService();
 	}
 
