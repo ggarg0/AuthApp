@@ -5,6 +5,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { Role } from './data.model';
+import { ManageUserComponent } from './manage-user/manage-user.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -13,17 +14,19 @@ const routes: Routes = [
   { path: 'resetpassword', component: ResetPasswordComponent },
 
   {
-    path: 'productivityce',
+    path: 'getuser',
     component: SignupComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [Role.Admin, Role.Developer] },
+  },
+
+  {
+    path: 'user',
+    component: ManageUserComponent,
     canActivate: [AuthGuard],
     data: { roles: [Role.Admin] },
   },
-  {
-    path: 'averagedaysclosurewfc',
-    component: SignupComponent,
-    canActivate: [AuthGuard],
-    data: { roles: [Role.Admin, Role.Manager] },
-  },
+
   { path: '**', redirectTo: 'login' },
 ];
 

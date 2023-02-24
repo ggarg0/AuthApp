@@ -16,9 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import com.demo.authappservice.jwt.JwtTokenFilter;
 import com.demo.authappservice.service.UserService;
@@ -40,10 +37,12 @@ public class WebSecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable()
 				.securityMatcher("/api/**") 
-				.authorizeHttpRequests(authorize -> authorize						
+				.authorizeHttpRequests(authorize -> authorize	
+						.requestMatchers("/api/**").permitAll() 
 						.requestMatchers("/api/admin/**", "/api/manage/**").hasRole("ADMIN")       
 						.requestMatchers("/api/dev/**").hasAnyRole("ADMIN", "DEVELOPER")    
 						.requestMatchers("/api/user/**", "/api/loaddata/**").permitAll() 
+						
 						.anyRequest().authenticated()                      
 					)
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

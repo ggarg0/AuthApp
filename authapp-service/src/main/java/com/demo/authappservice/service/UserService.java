@@ -144,10 +144,10 @@ public class UserService implements UserDetailsService {
 		return result;
 	}
 
-	public String deleteUser(User userDetails, String loggedUser) {
+	public String deleteUser(String username, String loggedUser) {
 		String result = "";
 		try {
-			User user = userRepository.loadUserDetails(userDetails.getUsername());
+			User user = userRepository.loadUserDetails(username);
 			userRepository.delete(user);
 			String messageBody = "Hello," + " \n\nAccess request for application has been modified:" + "\n\nRole : "
 					+ user.getRole() + "\nApproved : " + user.getApproved() + "\nActive : " + user.getActive()
@@ -159,7 +159,7 @@ public class UserService implements UserDetailsService {
 			logger.info("User " + user.getUsername() + " deleted by " + loggedUser);
 		} catch (Exception e) {
 			result = MessageConstants.FAILED;
-			logger.error("User save request for " + userDetails.getUsername() + " : Exception - " + e.getMessage());
+			logger.error("User save request for " + username + " : Exception - " + e.getMessage());
 		}
 		return result;
 	}

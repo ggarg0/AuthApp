@@ -1,13 +1,14 @@
 package com.demo.authappservice.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.demo.authappservice.entity.User;
 import com.demo.authappservice.jwt.JwtTokenProvider;
@@ -44,6 +46,11 @@ public class UserController {
 		return userService.loadUserDetails(AppUtil.getLoggedUserFromHeader(headers));
 	}
 
+	@GetMapping("/api/manage/users")
+	public List<User> retrieveAllUsers() {
+		return userService.retrieveAllUsers();
+	}
+
 	@PostMapping(value = "/api/user/authenticate")
 	public User authenticate(@RequestBody User user) {
 		User userAuth = new User();
@@ -56,8 +63,12 @@ public class UserController {
 				userAuth.setMessage(jwtTokenProvider.generateToken(userAuth.getUsername()));
 				logger.info("User {} login as {}", userAuth.getUsername(), userAuth.getRole());
 			}
+		} catch (BadCredentialsException e) {
+			logger.error("Authentication error for " + user.getUsername() + " : Exception - " + e.getMessage());
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 		} catch (Exception e) {
 			logger.error("Authentication error for " + user.getUsername() + " : Exception - " + e.getMessage());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 		return userAuth;
 	}
@@ -86,10 +97,10 @@ public class UserController {
 	public String saveUser(@RequestHeader HttpHeaders headers, @RequestBody User user) {
 		return userService.saveUser(user, AppUtil.getLoggedUserFromHeader(headers));
 	}
-	
+
 	@DeleteMapping(value = "/api/manage/user/delete")
-	public String deleteUser(@RequestHeader HttpHeaders headers, @RequestBody User user) {
-		return userService.deleteUser(user, AppUtil.getLoggedUserFromHeader(headers));
+	public String deleteUser(@RequestHeader HttpHeaders headers, String username) {
+		return userService.deleteUser(username, AppUtil.getLoggedUserFromHeader(headers));
 	}
 
 }

@@ -33,8 +33,8 @@ CREATE TABLE USERS (
                password VARCHAR(250) DEFAULT NULL,
                team VARCHAR(100),
                role VARCHAR(100),
-               approved INT,
-               active INT                              
+               approved VARCHAR(20),
+               active VARCHAR(20)                              
 );
 
 ALTER TABLE USERS ADD CONSTRAINT username_unique UNIQUE(username);

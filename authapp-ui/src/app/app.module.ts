@@ -42,6 +42,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthService } from './auth/auth.service';
 import { TokenInterceptorService } from './auth/token.interceptor';
+import { ManageUserComponent } from './manage-user/manage-user.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { TokenInterceptorService } from './auth/token.interceptor';
     ResetPasswordComponent,
     SignupComponent,
     HeaderComponent,
+    ManageUserComponent,
   ],
   imports: [
     BrowserModule,

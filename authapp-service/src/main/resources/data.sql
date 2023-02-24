@@ -25,10 +25,10 @@
  */
                
 INSERT INTO USERS (firstname, lastname, username, password, team, role, approved, active)
-VALUES ('Adam', 'Sandler', 'adam@gmail.com', '$2a$10$uGibDOMvRoRYggPgRTvOX.dtqqb7sED2V5KJSuNEh6KbKMUcv7uka', 'Team A', 'Admin',1, 1),
-	   ('Brad', 'Pitt', 'brad@gmail.com', '$2a$10$qFG8mxRGv1.xlUD19LvgceJqIsxqkfOPdt7c432yeeGzogTnFjt7i', 'Team B', 'Developer', 1, 1 ),
-	   ('Allan', 'Waugh', 'allan@gmail.com', '$2a$10$4lYJ8iOFJl3VVJOR.ivqVesOsfwXDWKWavGNe9V4gOMVqBuIiBfkS', 'Team A', 'Developer', 0, 1),
-	   ('Chris', 'Dale', 'chris@gmail.com', '$2a$10$NI0EmLmkTqE9QbCzGXCtCu3Zg8iMIwrFL4eMYV58WkLD7fuNUGxNW', 'Team B', 'Developer', 1, 0 );
+VALUES ('Adam', 'Sandler', 'adam@gmail.com', '$2a$10$uGibDOMvRoRYggPgRTvOX.dtqqb7sED2V5KJSuNEh6KbKMUcv7uka', 'Team A', 'Admin', 'Yes', 'Yes'),
+	   ('Brad', 'Pitt', 'brad@gmail.com', '$2a$10$qFG8mxRGv1.xlUD19LvgceJqIsxqkfOPdt7c432yeeGzogTnFjt7i', 'Team B', 'Developer', 'Yes', 'Yes' ),
+	   ('Allan', 'Waugh', 'allan@gmail.com', '$2a$10$4lYJ8iOFJl3VVJOR.ivqVesOsfwXDWKWavGNe9V4gOMVqBuIiBfkS', 'Team A', 'Developer', 'No', 'Yes'),
+	   ('Chris', 'Dale', 'chris@gmail.com', '$2a$10$NI0EmLmkTqE9QbCzGXCtCu3Zg8iMIwrFL4eMYV58WkLD7fuNUGxNW', 'Team B', 'Developer', 'Yes', 'No' );
 	   
 INSERT INTO LOADDATA (datatypeid, datatype, datavalue)
 VALUES  (1, 'Role', 'Developer'),

@@ -1,12 +1,12 @@
 package com.demo.authappservice.constant;
 
 public class MessageConstants {
-	public static final String ADMIN = "ADMIN";
-	public static final String DEVELOPER = "DEVELOPER";
+	public static final String ADMIN = "Admin";
+	public static final String DEVELOPER = "Developer";
 
-	public static final String SUCCESS = "SUCCESS";
-	public static final String FAILED = "FAILED";
-	public static final String YES = "YES";
+	public static final String SUCCESS = "Success";
+	public static final String FAILED = "Failed";
+	public static final String YES = "Yes";
 	
 	public static final String UserNotFound = "User details not found";
 	public static final String JWTUsernameMismatchFound = "User name mismatch found in token";

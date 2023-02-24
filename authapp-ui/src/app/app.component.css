@@ -37,3 +37,61 @@ mat-toolbar {
 mat-button {
   margin-left: 2rem;
 }
+
+.mat-sort-header-container {
+  justify-content: center;
+   margin-top: 1rem;
+   margin-bottom: 1rem;
+}
+
+th.mat-header-cell, .mat-header-cell, .mat-sort-header  {
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+  font-size: small;
+  font-family: 'Segoe UI';
+  text-decoration: underline;
+  text-align: center;
+  color : black;
+  background-image: url('/assets/smiley.jpg');
+}
+
+td.mat-cell {
+  text-align: center;
+  font-size: small;
+  font-family: "Tahoma";
+}
+
+.mat-header-cell, .mat-sort-header {
+   color : black;
+   background-image: url('/assets/smiley.jpg');
+}
+
+.mat-table {
+  margin-top: 0rem;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+  text-align: center;
+}
+
+.mat-checkbox-checked.mat-accent .mat-checkbox-background,
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: teal !important;
+}
+
+.mat-raised-button.mat-primary {
+  color: black;
+  background-color:#A3E3E3;
+  margin-left: 20px;
+}
+
+.filter {
+  font-size: 14px;
+  width: 30%;
+}
+
+.mat-row:nth-child(2n) {
+  background-color: #f2f2f2;
+}

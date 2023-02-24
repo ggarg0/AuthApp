@@ -71,7 +71,7 @@ export class LoginComponent {
           localStorage.setItem('Username', user.username);
         }
 
-        if (response.length != 0 && response[0].message.includes('valid')) {
+        if (response.message.includes('valid')) {
           this.dataService.openSnackBarWithDuration(
             response[0].message,
             'Close',
@@ -82,24 +82,23 @@ export class LoginComponent {
         }
 
         if (
-          response.length != 0 &&
-          response[0].approved === '1' &&
-          response[0].active === '1'
+          response.approved === ReturnMessages.YES &&
+          response.active === ReturnMessages.YES
         ) {
-          localStorage.setItem('Firstname', response[0].firstName);
-          localStorage.setItem('Lastname', response[0].lastName);
-          localStorage.setItem('Role', response[0].role);
-          localStorage.setItem('Team', response[0].team);
+          localStorage.setItem('Firstname', response.firstname);
+          localStorage.setItem('Lastname', response.lastname);
+          localStorage.setItem('Role', response.role);
+          localStorage.setItem('Team', response.team);
           localStorage.setItem('Authenticated', 'true');
-          localStorage.setItem('JWTToken', response[0].message);
+          localStorage.setItem('JWTToken', response.message);
           this.dataService.setLoggedInUsername(
-            response[0].firstName + ' ' + response[0].lastName
+            response.firstname + ' ' + response.lastname
           );
 
           if (localStorage.getItem('Role') === Role.Admin) {
-            this._router.navigate(['/admin']);
+            this._router.navigate(['/user']);
           } else if (localStorage.getItem('Role') === Role.Developer) {
-            this._router.navigate(['/developer']);
+            this._router.navigate(['/getuser']);
           } else {
             this._router.navigate(['/login']);
           }
@@ -110,14 +109,14 @@ export class LoginComponent {
             this.dataService.snackbarduration
           );
           localStorage.clear();
-        } else if (response[0].approved === '0') {
+        } else if (response.approved === ReturnMessages.No) {
           this.dataService.openSnackBarWithDuration(
             'User not approved. Please contact administrator',
             'Close',
             this.dataService.snackbarduration
           );
           localStorage.clear();
-        } else if (response[0].active === '0') {
+        } else if (response.active === ReturnMessages.No) {
           this.dataService.openSnackBarWithDuration(
             'User not active. Please contact administrator',
             'Close',
@@ -135,7 +134,7 @@ export class LoginComponent {
       },
       error: (err) => {
         localStorage.clear();
-        if (err.status === 403) {
+        if (err.status === 403 || err.status === 401) {
           this.dataService.openSnackBarWithDuration(
             'Login error : Invalid credentials',
             'Close',
@@ -149,7 +148,7 @@ export class LoginComponent {
           );
         } else {
           this.dataService.openSnackBarWithDuration(
-            'Login error : ' + err.message,
+            'Login error : ' + err.error.message,
             'Close',
             this.dataService.snackbarduration
           );

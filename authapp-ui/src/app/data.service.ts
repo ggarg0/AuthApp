@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import axios from 'axios';
 
@@ -68,6 +68,11 @@ export class DataService {
       .catch((error) => {
         this.showErrorMessage(error.statusText);
       });
+  }
+
+  loadUserDetails(): Observable<any> {
+    const url = this.apiURL + 'manage/users';
+    return this.http.get(url).pipe(catchError(this.handleError));
   }
 
   handleError(error: HttpErrorResponse) {

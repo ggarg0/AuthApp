@@ -1,13 +1,12 @@
 export enum Role {
   Admin = 'Admin',
-  Manager = 'Manager',
   Developer = 'Developer',
 }
 
 export enum ReturnMessages {
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
-  YES = 'YES',
+  SUCCESS = 'Success',
+  FAILED = 'Failed',
+  YES = 'Yes',
   No = 'No',
 }
 
@@ -18,4 +17,18 @@ export enum Exceptions {
   UserAlreadyExist = 'User already exist',
   InvalidToken = 'Invalid token found',
   TokenExpired = 'Token already expired',
+}
+
+export interface UserDetails {
+  checked: boolean;
+  firstname: string;
+  lastname: string;
+  username: string;
+  password: string;
+  team: string;
+  role: string;
+  approved: string;
+  active: string;
+  otp: string;
+  message: string;
 }
