@@ -4,12 +4,14 @@ import {
   FormGroup,
   FormControl,
   Validators,
+  Form,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService } from 'src/app/data.service';
 import { User } from 'src/app/dataClass';
 import { AuthService } from '../auth.service';
 import * as bcrypt from 'bcryptjs';
+import { Exceptions, ReturnMessages } from 'src/app/data.model';
 
 @Component({
   selector: 'app-reset-password',
@@ -36,12 +38,8 @@ export class ResetPasswordComponent {
 
   ngOnInit(): void {}
 
-  resetForm(resetForm: any) {
-    if (
-      resetForm.value.username.length === 0 &&
-      resetForm.value.otp.length === 0 &&
-      resetForm.value.password.length === 0
-    ) {
+  resetForm(resetForm: FormGroup) {
+    if (resetForm.invalid) {
       return;
     }
 
@@ -58,10 +56,19 @@ export class ResetPasswordComponent {
     this.resetUserPassword(resetForm.value);
   }
 
-  GetOTP(resetForm: any) {
+  GetOTP(resetForm: FormGroup) {
+    if (resetForm.value.username.length === 0) {
+      this.dataService.openSnackBarWithDuration(
+        'Enter valid username for OTP',
+        'Close',
+        this.dataService.snackbarduration
+      );
+      return;
+    }
+
     this._auth.getOTP(resetForm.value.username).subscribe({
-      next: (response) => {
-        if (response === '') {
+      next: (response: any) => {
+        if (response === 0) {
           this.dataService.openSnackBarWithDuration(
             'OTP not generated. Please contact administrator',
             'Close',
@@ -69,7 +76,8 @@ export class ResetPasswordComponent {
           );
         } else {
           this.dataService.openSnackBarWithDuration(
-            'OTP generated successfully. Please check your mailbox',
+            'OTP generated successfully. Please check your mailbox : ' +
+              response,
             'Close',
             this.dataService.snackbarduration
           );
@@ -93,30 +101,22 @@ export class ResetPasswordComponent {
     });
   }
 
-
-  GetOTP1(resetForm: any) {
-    const res = [];
-    this._auth.getOTP(resetForm.value.username).subscribe((res)=>{
-      console.log(res);
-  });
-  }
-
   resetUserPassword(resetUser: User) {
-    this._auth.resetUserPassword(resetUser).subscribe(
-      (res) => {
-        if (res === 2) {
+    this._auth.resetUserPassword(resetUser).subscribe({
+      next: (response: string) => {
+        if (response === Exceptions.OTPMismatchFound) {
           this.dataService.openSnackBarWithDuration(
             'Please enter correct OTP',
             'Close',
             this.dataService.snackbarduration
           );
-        } else if (res === 3) {
+        } else if (response === Exceptions.UserNotFound) {
           this.dataService.openSnackBarWithDuration(
             'User not found. Please use signup to create account',
             'Close',
             this.dataService.snackbarduration
           );
-        } else if (res === 1) {
+        } else if (response === ReturnMessages.SUCCESS) {
           this.dataService.openSnackBarWithDuration(
             'User password reset successfully',
             'Close',
@@ -131,13 +131,13 @@ export class ResetPasswordComponent {
           );
         }
       },
-      (err) => {
+      error: (err) => {
         this.dataService.openSnackBarWithDuration(
           'Password reset error : ' + err.errorMessage,
           'Close',
           this.dataService.snackbarduration
         );
-      }
-    );
+      },
+    });
   }
 }

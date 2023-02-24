@@ -45,22 +45,21 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/api/user/authenticate")
-	public List<User> authenticate(@RequestBody User user) {
-		List<User> userList = new ArrayList<User>();
+	public User authenticate(@RequestBody User user) {
+		User userAuth = new User();
 		try {
 			Authentication authentication = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 			if (authentication.isAuthenticated()) {
-				User userAuth = (User) authentication.getPrincipal();
+				userAuth = (User) authentication.getPrincipal();
 				userAuth.setPassword("");
 				userAuth.setMessage(jwtTokenProvider.generateToken(userAuth.getUsername()));
-				userList.add(userAuth);
 				logger.info("User {} login as {}", userAuth.getUsername(), userAuth.getRole());
 			}
 		} catch (Exception e) {
 			logger.error("Authentication error for " + user.getUsername() + " : Exception - " + e.getMessage());
 		}
-		return userList;
+		return userAuth;
 	}
 
 	@GetMapping(value = "/api/user/refreshjwttoken")

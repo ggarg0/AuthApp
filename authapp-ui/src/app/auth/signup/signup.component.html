@@ -99,6 +99,7 @@
             placeholder="Enter OTP received"
             required
           />
+          <mat-error *ngIf="!userForm.valid">Please enter OTP</mat-error>
         </mat-form-field>
         <button mat-raised-button (click)="GetOTP(userForm)">Get OTP</button>
       </div>

@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.entity.User;
+import com.demo.authappservice.exception.OTPMismatchFoundException;
 import com.demo.authappservice.exception.UserNotFoundException;
 import com.demo.authappservice.jwt.JwtTokenProvider;
 import com.demo.authappservice.repository.UserRepository;
@@ -27,7 +29,7 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
 
@@ -56,7 +58,6 @@ public class UserService implements UserDetailsService {
 		String result = "";
 		List<String> adminUser = new ArrayList<>();
 		try {
-
 			if (Objects.nonNull(newUser) && otpService.getOtp(newUser.getUsername()) != 0
 					&& otpService.getOtp(newUser.getUsername()) == Integer.parseInt(newUser.getOTP())) {
 
@@ -97,7 +98,7 @@ public class UserService implements UserDetailsService {
 				logger.info("OTP mismatch found for user {} for user signup", newUser.getUsername());
 			}
 		} catch (Exception e) {
-			if (e instanceof DuplicateKeyException) {
+			if (e instanceof DuplicateKeyException || e instanceof DataIntegrityViolationException) {
 				result = MessageConstants.UserAlreadyExist;
 				logger.error("New user {} signup exception - {} already exist", newUser.getUsername());
 			} else {
@@ -166,32 +167,33 @@ public class UserService implements UserDetailsService {
 	public String resetPassword(User resetUser) {
 		String result = "";
 		try {
-			if (Objects.nonNull(resetUser) && otpService.getOtp(resetUser.getUsername()) != 0
-					&& otpService.getOtp(resetUser.getUsername()) == Integer.parseInt(resetUser.getOTP())) {
-				logger.info("User reset password request for " + resetUser.getUsername());
+			logger.info("User reset password request for " + resetUser.getUsername());
+			User user = userRepository.loadUserDetails(resetUser.getUsername());
 
-				User user = userRepository.loadUserDetails(resetUser.getUsername());
-				user.setPassword(resetUser.getPassword());
-				userRepository.save(user);
+			if (Objects.isNull(user))
+				throw new UserNotFoundException(MessageConstants.UserNotFound);
 
-				if (user != null) {
-					String messageBody = "Hello " + user.getUsername() + ",\n\n"
-							+ "Your password has been reset now. Please try to login. \n\nThanks";
+			if (otpService.getOtp(resetUser.getUsername()) == 0
+					|| otpService.getOtp(resetUser.getUsername()) != Integer.parseInt(resetUser.getOTP()))
+				throw new OTPMismatchFoundException(MessageConstants.OTPMismatchFound);
 
-					// AppUtil.sendMail(user.getUsername(), "", "App user password reset
-					// request", messageBody, false, false);
+			user.setPassword(resetUser.getPassword());
+			userRepository.save(user);
+			String messageBody = "Hello " + user.getUsername() + ",\n\n"
+					+ "Your password has been reset now. Please try to login. \n\nThanks";
 
-					logger.info("User password reset successful for {}", user.getUsername());
-					otpService.clearOTP(user.getUsername());
-					result = MessageConstants.SUCCESS;
-				} else {
-					result = MessageConstants.FAILED;
-					logger.info("User password reset was not successful for {}", resetUser.getUsername());
-				}
-			} else {
-				result = MessageConstants.OTPMismatchFound;
-				logger.info("OTP mismatch found for user {} for password reset", resetUser.getUsername());
-			}
+			// AppUtil.sendMail(user.getUsername(), "", "App user password reset
+			// request", messageBody, false, false);
+
+			logger.info("User password reset successful for {}", user.getUsername());
+			otpService.clearOTP(user.getUsername());
+			result = MessageConstants.SUCCESS;
+		} catch (UserNotFoundException e) {
+			result = MessageConstants.UserNotFound;
+			logger.error("User not found {} for password reset", resetUser.getUsername());
+		} catch (OTPMismatchFoundException e) {
+			result = MessageConstants.OTPMismatchFound;
+			logger.error("OTP mismatch found for user {} for password reset", resetUser.getUsername());
 		} catch (Exception e) {
 			result = MessageConstants.FAILED;
 			logger.error("User password reset for " + resetUser.getUsername() + " : Exception - " + e.getMessage());
@@ -220,7 +222,11 @@ public class UserService implements UserDetailsService {
 	public int getOTP(String username) {
 		int result = 0;
 		try {
+			if (Objects.isNull(username) || username.isBlank())
+				throw new UserNotFoundException(MessageConstants.UserNotFound);
+
 			otpService.generateOTP(username);
+			
 			if (otpService.getOtp(username) != 0) {
 				String messageBody = "Hello " + username + ",\n\nYour OTP " + otpService.getOtp(username)
 						+ " is valid for 15 minutes. \n\nThanks";
@@ -231,6 +237,8 @@ public class UserService implements UserDetailsService {
 			} else {
 				logger.info("User OTP not generated for " + username);
 			}
+		} catch (UserNotFoundException e) {
+			logger.error("User not found {} for generating OTP", username);
 		} catch (Exception e) {
 			logger.error("User OTP for " + username + " : Exception - " + e.getMessage());
 		}

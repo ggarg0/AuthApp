@@ -10,17 +10,10 @@ export class TokenInterceptorService implements HttpInterceptor {
     let role: any;
 
     let authService = this.injector.get(AuthService);
-
     user = authService.getLoggedInUsername();
-    console.log(user);
-
     role = authService.getRole();
-    console.log(role);
 
-
-
-
-      let tokenizedReq = req.clone({
+    let tokenizedReq = req.clone({
         headers: req.headers
           .set('Authorization', 'Bearer ' + authService.getToken())
           .set('Username', user)

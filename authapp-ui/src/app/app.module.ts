@@ -91,11 +91,11 @@ import { TokenInterceptorService } from './auth/token.interceptor';
   providers: [
     AuthService,
     AuthGuard,
-    {
+  /*  {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,
       multi: true,
-    },
+    }, */
   ],
   bootstrap: [AppComponent],
 })

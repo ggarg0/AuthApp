@@ -16,22 +16,22 @@ export class AuthService {
 
   authenticateUser(user: User) {
     return this.http.post<any>(
-      this.dataService.apiURL + 'manage/user/authenticate/',
+      this.dataService.apiURL + 'user/authenticate',
       user
     );
   }
 
   signupUser(user: User) {
-    return this.http.post<any>(
-      this.dataService.apiURL + 'manage/user/adduser',
-      user
-    );
+    return this.http.post(this.dataService.apiURL + 'user/adduser', user, {
+      responseType: 'text',
+    });
   }
 
   resetUserPassword(user: User) {
-    return this.http.post<any>(
-      this.dataService.apiURL + 'manage/user/resetpassword',
-      user
+    return this.http.post(
+      this.dataService.apiURL + 'user/resetpassword',
+      user,
+      { responseType: 'text' }
     );
   }
 
@@ -42,10 +42,8 @@ export class AuthService {
     params = params.append('username', username + '');
     console.log('url ; ' + params);
 
-    return this.http
-      .get<string>(url, { params: params });
+    return this.http.get<string>(url, { params: params });
   }
-
 
   refreshJWTToken() {
     if (this.getLoggedInUsername() != null) {

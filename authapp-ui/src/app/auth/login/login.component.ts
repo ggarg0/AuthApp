@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { DataService } from 'src/app/data.service';
 import { HeaderComponent } from 'src/app/header/header.component';
 import { AuthService } from '../auth.service';
-import { Role } from 'src/app/data.model';
+import { Exceptions, ReturnMessages, Role } from 'src/app/data.model';
 
 @Component({
   selector: 'app-login',
@@ -52,7 +52,7 @@ export class LoginComponent {
   user: User = new User();
 
   loginForm: FormGroup = new FormGroup({
-    userName: new FormControl('', Validators.required),
+    username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
   });
 
@@ -65,15 +65,15 @@ export class LoginComponent {
 
   authenticate(user: User) {
     localStorage.setItem('Username', user.username);
-    this._auth.authenticateUser(user).subscribe(
-      (res) => {
+    this._auth.authenticateUser(user).subscribe({
+      next: (response: any) => {
         if (localStorage.getItem('Username') === null) {
           localStorage.setItem('Username', user.username);
         }
 
-        if (res.length != 0 && res[0].message.includes('valid')) {
+        if (response.length != 0 && response[0].message.includes('valid')) {
           this.dataService.openSnackBarWithDuration(
-            res[0].message,
+            response[0].message,
             'Close',
             this.dataService.snackbarduration
           );
@@ -82,18 +82,18 @@ export class LoginComponent {
         }
 
         if (
-          res.length != 0 &&
-          res[0].approved === '1' &&
-          res[0].active === '1'
+          response.length != 0 &&
+          response[0].approved === '1' &&
+          response[0].active === '1'
         ) {
-          localStorage.setItem('Firstname', res[0].firstName);
-          localStorage.setItem('Lastname', res[0].lastName);
-          localStorage.setItem('Role', res[0].role);
-          localStorage.setItem('Team', res[0].team);
+          localStorage.setItem('Firstname', response[0].firstName);
+          localStorage.setItem('Lastname', response[0].lastName);
+          localStorage.setItem('Role', response[0].role);
+          localStorage.setItem('Team', response[0].team);
           localStorage.setItem('Authenticated', 'true');
-          localStorage.setItem('JWTToken', res[0].message);
+          localStorage.setItem('JWTToken', response[0].message);
           this.dataService.setLoggedInUsername(
-            res[0].firstName + ' ' + res[0].lastName
+            response[0].firstName + ' ' + response[0].lastName
           );
 
           if (localStorage.getItem('Role') === Role.Admin) {
@@ -103,22 +103,21 @@ export class LoginComponent {
           } else {
             this._router.navigate(['/login']);
           }
-        } else if (res.length === 0) {
+        } else if (response.length === 0) {
           this.dataService.openSnackBarWithDuration(
             'Enter valid credentials',
             'Close',
             this.dataService.snackbarduration
           );
-
           localStorage.clear();
-        } else if (res[0].approved === '0') {
+        } else if (response[0].approved === '0') {
           this.dataService.openSnackBarWithDuration(
             'User not approved. Please contact administrator',
             'Close',
             this.dataService.snackbarduration
           );
           localStorage.clear();
-        } else if (res[0].active === '0') {
+        } else if (response[0].active === '0') {
           this.dataService.openSnackBarWithDuration(
             'User not active. Please contact administrator',
             'Close',
@@ -134,7 +133,7 @@ export class LoginComponent {
           localStorage.clear();
         }
       },
-      (err) => {
+      error: (err) => {
         localStorage.clear();
         if (err.status === 403) {
           this.dataService.openSnackBarWithDuration(
@@ -155,7 +154,7 @@ export class LoginComponent {
             this.dataService.snackbarduration
           );
         }
-      }
-    );
+      },
+    });
   }
 }
