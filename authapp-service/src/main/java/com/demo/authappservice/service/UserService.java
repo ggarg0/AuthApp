@@ -63,15 +63,15 @@ public class UserService implements UserDetailsService {
 
 				logger.info("User add request for : {}", newUser.getUsername());
 
-				if (newUser.getRole().equalsIgnoreCase("ADMIN"))
-					newUser.setApproved("0");
+				if (newUser.getRole().equalsIgnoreCase(MessageConstants.ADMIN))
+					newUser.setApproved(MessageConstants.NO);
 				else
-					newUser.setApproved("1");
+					newUser.setApproved(MessageConstants.YES);
 
-				newUser.setActive("1");
+				newUser.setActive(MessageConstants.YES);
 				User user = userRepository.save(newUser);
 
-				if (user.getApproved().equals("1")) {
+				if (user.getApproved().equalsIgnoreCase(MessageConstants.YES)) {
 					String messageBody = "Hello " + user.getFirstname() + " " + user.getLastname() + ",\n\n"
 							+ "Access request for the application has been approved. " + "\n\nThanks";
 

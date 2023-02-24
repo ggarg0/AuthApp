@@ -7,6 +7,7 @@ public class MessageConstants {
 	public static final String SUCCESS = "Success";
 	public static final String FAILED = "Failed";
 	public static final String YES = "Yes";
+	public static final String NO = "No";
 	
 	public static final String UserNotFound = "User details not found";
 	public static final String JWTUsernameMismatchFound = "User name mismatch found in token";
