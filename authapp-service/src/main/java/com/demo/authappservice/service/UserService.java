@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.entity.User;
-import com.demo.authappservice.exception.OTPMismatchFoundException;
+import com.demo.authappservice.exception.OTPMismatchException;
 import com.demo.authappservice.exception.UserNotFoundException;
 import com.demo.authappservice.jwt.JwtTokenProvider;
 import com.demo.authappservice.repository.UserRepository;
@@ -175,7 +175,7 @@ public class UserService implements UserDetailsService {
 
 			if (otpService.getOtp(resetUser.getUsername()) == 0
 					|| otpService.getOtp(resetUser.getUsername()) != Integer.parseInt(resetUser.getOTP()))
-				throw new OTPMismatchFoundException(MessageConstants.OTPMismatchFound);
+				throw new OTPMismatchException(MessageConstants.OTPMismatchFound);
 
 			user.setPassword(resetUser.getPassword());
 			userRepository.save(user);
@@ -191,7 +191,7 @@ public class UserService implements UserDetailsService {
 		} catch (UserNotFoundException e) {
 			result = MessageConstants.UserNotFound;
 			logger.error("User not found {} for password reset", resetUser.getUsername());
-		} catch (OTPMismatchFoundException e) {
+		} catch (OTPMismatchException e) {
 			result = MessageConstants.OTPMismatchFound;
 			logger.error("OTP mismatch found for user {} for password reset", resetUser.getUsername());
 		} catch (Exception e) {
