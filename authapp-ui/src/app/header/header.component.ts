@@ -5,16 +5,15 @@ import { DataService } from '../data.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['../app.component.css'],
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  lastBatchExecutionTime: string = '';
   constructor(
     public _authService: AuthService,
     public _dataService: DataService
   ) {}
 
-  ngOnInit(): void {}
+  lastBatchExecutionTime: string = '';
 
   logout() {
     if (this._authService.loggedIn()) {

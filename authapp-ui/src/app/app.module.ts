@@ -43,6 +43,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthService } from './auth/auth.service';
 import { TokenInterceptorService } from './auth/token.interceptor';
 import { ManageUserComponent } from './manage-user/manage-user.component';
+import { GetUserDetailsComponent } from './get-user-details/get-user-details.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { ManageUserComponent } from './manage-user/manage-user.component';
     SignupComponent,
     HeaderComponent,
     ManageUserComponent,
+    GetUserDetailsComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,7 +90,7 @@ import { ManageUserComponent } from './manage-user/manage-user.component';
     MatProgressButtonsModule,
     MatSlideToggleModule,
     MatListModule,
-    MatTooltipModule,
+    MatTooltipModule
   ],
   providers: [
     AuthService,

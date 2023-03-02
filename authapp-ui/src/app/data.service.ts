@@ -1,4 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -12,18 +16,15 @@ export class DataService {
     private _snackBar: MatSnackBar,
     private _router: Router
   ) {
-    if (this.teamListForSignUp.length == 0)
-      this.loadTeamListForSignUp();
+    if (this.teamListForSignUp.length == 0) this.loadTeamListForSignUp();
 
-    if (this.roleListForSignUp.length == 0)
-      this.loadRoleListForSignUp();
+    if (this.roleListForSignUp.length == 0) this.loadRoleListForSignUp();
   }
 
   apiURL = 'http://localhost:8888/api/';
 
   emailPattern = '^[a-zA-Z0-9._%+-]+@gmail.com';
   snackbarduration = 5000;
-  loggedInUserName = '';
   timeout = 10;
   teamListForSignUp: string[] = [];
   roleListForSignUp: string[] = [];
@@ -34,15 +35,11 @@ export class DataService {
     });
   }
 
-  async setLoggedInUsername(username: string) {
-    this.loggedInUserName = username;
-  }
-
   async loadTeamListForSignUp() {
     this.teamListForSignUp.length = 0;
     const url = this.apiURL + 'loaddata';
     axios
-      .get(url, { params: { datatype: 'Team' }})
+      .get(url, { params: { datatype: 'Team' } })
       .then(async (response) => {
         let json = await response.data;
         for (var data in json) {
@@ -58,7 +55,7 @@ export class DataService {
     this.roleListForSignUp.length = 0;
     const url = this.apiURL + 'loaddata';
     axios
-      .get(url, { params: { datatype: 'Role' }})
+      .get(url, { params: { datatype: 'Role' } })
       .then(async (response) => {
         let json = await response.data;
         for (var data in json) {
@@ -70,9 +67,18 @@ export class DataService {
       });
   }
 
-  loadUserDetails(): Observable<any> {
+  retrieveAllUsers(): Observable<any> {
     const url = this.apiURL + 'manage/users';
     return this.http.get(url).pipe(catchError(this.handleError));
+  }
+
+  loadUserDetails(username: string): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('username', username + '');
+    const url = this.apiURL + 'dev/loaduser';
+    return this.http
+      .get(url, { params: params })
+      .pipe(catchError(this.handleError));
   }
 
   handleError(error: HttpErrorResponse) {

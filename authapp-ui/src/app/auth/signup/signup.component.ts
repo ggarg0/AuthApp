@@ -15,7 +15,7 @@ import { Exceptions, ReturnMessages } from 'src/app/data.model';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['../../app.component.css'],
+  styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent {
   constructor(

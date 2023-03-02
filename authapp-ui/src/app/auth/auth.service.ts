@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { DataService } from '../data.service';
 import { Role } from '../data.model';
 import { User } from '../dataClass';
-import { Observable, retry, catchError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -38,10 +38,7 @@ export class AuthService {
   getOTP(username: string): Observable<string> {
     let params = new HttpParams();
     const url = this.dataService.apiURL + 'user/otp';
-    console.log('username ; ' + url);
     params = params.append('username', username + '');
-    console.log('url ; ' + params);
-
     return this.http.get<string>(url, { params: params });
   }
 
@@ -59,9 +56,6 @@ export class AuthService {
           (res) => {
             if (res.length > 0) {
               localStorage.setItem('JWTToken', res);
-              this.dataService.setLoggedInUsername(
-                this.getLoggedInUserFullName()
-              );
             }
           },
           (err) => {

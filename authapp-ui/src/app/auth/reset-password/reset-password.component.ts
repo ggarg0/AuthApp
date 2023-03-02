@@ -4,7 +4,6 @@ import {
   FormGroup,
   FormControl,
   Validators,
-  Form,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService } from 'src/app/data.service';
@@ -16,7 +15,7 @@ import { Exceptions, ReturnMessages } from 'src/app/data.model';
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
-  styleUrls: ['../../app.component.css'],
+  styleUrls: ['./reset-password.component.css'],
 })
 export class ResetPasswordComponent {
   constructor(

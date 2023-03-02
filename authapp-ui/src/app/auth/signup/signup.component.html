@@ -101,14 +101,31 @@
           />
           <mat-error *ngIf="!userForm.valid">Please enter OTP</mat-error>
         </mat-form-field>
-        <button mat-raised-button (click)="GetOTP(userForm)">Get OTP</button>
+        <button
+          mat-raised-button
+          style="background-color: #0099ff; margin-left: 5rem; color: white"
+          (click)="GetOTP(userForm)"
+        >
+          Get OTP
+        </button>
       </div>
 
       <div align="center" style="margin-top: 10px; margin-bottom: 20px">
-        <button mat-raised-button (click)="onSignup(userForm)" type="submit">
+        <button
+          mat-raised-button
+          style="background-color: #0099ff; margin-left: 5rem; color: white"
+          (click)="onSignup(userForm)"
+          type="submit"
+        >
           Sign up
         </button>
-        <button mat-raised-button routerLink="/login">Back to Login</button>
+        <button
+          mat-raised-button
+          style="background-color: #0099ff; margin-left: 5rem; color: white"
+          routerLink="/login"
+        >
+          Back to Login
+        </button>
       </div>
     </form>
   </mat-card>

@@ -1,5 +1,6 @@
 package com.demo.authappservice.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -42,8 +43,10 @@ public class UserController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping(value = "/api/dev/loaduser")
-	public User loadUserDetails(@RequestHeader HttpHeaders headers) {
-		return userService.loadUserDetails(AppUtil.getLoggedUserFromHeader(headers));
+	public List<User> loadUserDetails(String username) {
+		List<User> result = new ArrayList<User>();
+		result.add((userService.loadUserDetails(username)));
+		return result;
 	}
 
 	@GetMapping("/api/manage/users")

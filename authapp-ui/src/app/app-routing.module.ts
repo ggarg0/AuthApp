@@ -5,6 +5,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { Role } from './data.model';
+import { GetUserDetailsComponent } from './get-user-details/get-user-details.component';
 import { ManageUserComponent } from './manage-user/manage-user.component';
 
 const routes: Routes = [
@@ -15,13 +16,13 @@ const routes: Routes = [
 
   {
     path: 'getuser',
-    component: SignupComponent,
+    component: GetUserDetailsComponent,
     canActivate: [AuthGuard],
     data: { roles: [Role.Admin, Role.Developer] },
   },
 
   {
-    path: 'user',
+    path: 'manageuser',
     component: ManageUserComponent,
     canActivate: [AuthGuard],
     data: { roles: [Role.Admin] },

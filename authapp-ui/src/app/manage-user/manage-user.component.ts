@@ -12,7 +12,7 @@ import { User } from '../dataClass';
 @Component({
   selector: 'app-manage-user',
   templateUrl: './manage-user.component.html',
-  styleUrls: ['../app.component.css'],
+  styleUrls: ['./manage-user.component.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [],
 })
@@ -186,7 +186,7 @@ export class ManageUserComponent implements OnInit {
 
   async viewUserData() {
     this.selection.clear();
-    this.dataService.loadUserDetails().subscribe({
+    this.dataService.retrieveAllUsers().subscribe({
       next: (response: any) => {
         if (response != null) {
           this.userDetails = response;

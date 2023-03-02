@@ -38,17 +38,28 @@
       <div style="margin-bottom: 2rem; margin-top: 3rem">
         <button
           mat-raised-button
+          style="background-color: #0099ff; color: white"
           type="submit"
           (click)="onAuthenticate(loginForm)"
         >
           Login
         </button>
 
-        <button mat-raised-button routerLink="/resetpassword">
+        <button
+          mat-raised-button
+          style="background-color: #0099ff; margin-left: 5rem; color: white"
+          routerLink="/resetpassword"
+        >
           Reset password
         </button>
 
-        <button mat-raised-button routerLink="/signup">Sign up</button>
+        <button
+          mat-raised-button
+          style="background-color: #0099ff; margin-left: 5rem; color: white"
+          routerLink="/signup"
+        >
+          Sign up
+        </button>
       </div>
     </form>
   </mat-card>

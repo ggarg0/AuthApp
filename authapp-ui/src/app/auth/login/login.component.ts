@@ -10,7 +10,7 @@ import { Exceptions, ReturnMessages, Role } from 'src/app/data.model';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['../../app.component.css'],
+  styleUrls: ['./login.component.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [HeaderComponent],
 })
@@ -91,12 +91,8 @@ export class LoginComponent {
           localStorage.setItem('Team', response.team);
           localStorage.setItem('Authenticated', 'true');
           localStorage.setItem('JWTToken', response.message);
-          this.dataService.setLoggedInUsername(
-            response.firstname + ' ' + response.lastname
-          );
-
-          if (localStorage.getItem('Role') === Role.Admin) {
-            this._router.navigate(['/user']);
+        if (localStorage.getItem('Role') === Role.Admin) {
+            this._router.navigate(['/manageuser']);
           } else if (localStorage.getItem('Role') === Role.Developer) {
             this._router.navigate(['/getuser']);
           } else {

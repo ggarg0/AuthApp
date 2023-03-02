@@ -16,20 +16,6 @@ mat-form-field {
   font-style: italic
 }
 
-.mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background, .mdc-checkbox__ripple {
-  background-color: 0099ff !important;
-  border-color: #0099ff !important;
-}
-
-mat-paginator {
-  margin-top: 1rem;
-}
-
-.filter {
-  font-size: 15px;
-  width: 20%;
-}
-
 .mat-mdc-header-row:nth-child(n) {
   background-image: url("/assets/backgroud.jpg");
   font-weight: bold;
@@ -38,7 +24,6 @@ mat-paginator {
   text-decoration: underline;
   color: black;
 }
-
 
 .mat-mdc-row:nth-child(2n) {
   background-color: lightgray;
