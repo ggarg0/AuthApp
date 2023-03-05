@@ -44,6 +44,7 @@ import { AuthService } from './auth/auth.service';
 import { TokenInterceptorService } from './auth/token.interceptor';
 import { ManageUserComponent } from './manage-user/manage-user.component';
 import { GetUserDetailsComponent } from './get-user-details/get-user-details.component';
+import { GetUserDetailComponent } from './get-user-detail/get-user-detail.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { GetUserDetailsComponent } from './get-user-details/get-user-details.com
     HeaderComponent,
     ManageUserComponent,
     GetUserDetailsComponent,
+    GetUserDetailComponent,
   ],
   imports: [
     BrowserModule,

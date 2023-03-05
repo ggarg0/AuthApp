@@ -1,0 +1,31 @@
+mat-form-field {
+  margin-top: 1rem;
+}
+
+.title-label {
+  background-image: url("/assets/backgroud.jpg");
+  text-align: center;
+  justify-content: center;
+  font-size: medium;
+  font-weight: bold;
+  height: 2rem
+}
+
+.font-style-small-italic {
+  font-size: small;
+  font-style: italic
+}
+
+.mat-mdc-header-row:nth-child(n) {
+  background-image: url("/assets/backgroud.jpg");
+  font-weight: bold;
+  font-size: small;
+  font-family: "Segoe UI";
+  text-decoration: underline;
+  color: black;
+}
+
+.mat-mdc-row:nth-child(2n) {
+  background-color: lightgray;
+}
+

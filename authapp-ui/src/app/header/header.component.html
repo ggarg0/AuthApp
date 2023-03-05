@@ -26,10 +26,7 @@
         *ngIf="_authService.isAdmin() || _authService.isDeveloper()"
         mat-menu-item
         routerLink="/getuser"
-        style="
-        font-size: small;
-        font-family: Arial;
-      "
+        style="font-size: small; font-family: Arial"
       >
         Get User
       </button>
@@ -38,12 +35,18 @@
         *ngIf="_authService.isAdmin()"
         mat-menu-item
         routerLink="/manageuser"
-        style="
-          font-size: small;
-          font-family: Calibri;
-        "
+        style="font-size: small; font-family: Calibri"
       >
         Manage User
+      </button>
+
+      <button
+        *ngIf="_authService.isAdmin() || _authService.isDeveloper()"
+        mat-menu-item
+        routerLink="/getuserdetail"
+        style="font-size: small; font-family: Arial"
+      >
+        Get User info
       </button>
     </mat-menu>
 
