@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
@@ -14,6 +15,7 @@ import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
+@Component
 public class AppUtil {
 	public static final String ADMIN_MAILID = "xyz@gmail.com";
 

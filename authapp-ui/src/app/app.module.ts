@@ -33,8 +33,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableFilterModule } from 'mat-table-filter';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -89,7 +87,6 @@ import { GetUserDetailComponent } from './get-user-detail/get-user-detail.compon
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    MatProgressButtonsModule,
     MatSlideToggleModule,
     MatListModule,
     MatTooltipModule

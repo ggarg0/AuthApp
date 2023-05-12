@@ -21,7 +21,6 @@ import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.entity.User;
 import com.demo.authappservice.exception.OTPMismatchException;
 import com.demo.authappservice.exception.UserNotFoundException;
-import com.demo.authappservice.jwt.JwtTokenProvider;
 import com.demo.authappservice.repository.UserRepository;
 
 @Service
@@ -29,9 +28,6 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	JwtTokenProvider jwtTokenProvider;
 
 	@Autowired
 	OTPService otpService;
