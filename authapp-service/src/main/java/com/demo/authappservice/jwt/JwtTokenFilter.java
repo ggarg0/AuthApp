@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.demo.authappservice.constant.MessageConstants;
 import com.demo.authappservice.service.UserService;
 
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,7 +60,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 				UserDetails userDetails = appService.loadUserByUsername(tokenProvider.extractUsername(token));
 
 				if (!(userDetails != null && usernameFromHeader.equalsIgnoreCase(userDetails.getUsername())))
-					throw new Exception(userDetails.getUsername() + " " + MessageConstants.JWTUsernameMismatchFound);
+					throw new SignatureException(
+							userDetails.getUsername() + " " + MessageConstants.JWTUsernameMismatchFound);
 
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
@@ -78,13 +79,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			}
 		} catch (Exception e) {
 			SecurityContextHolder.clearContext();
-			if (e instanceof ExpiredJwtException) {
-				logger.error("Session expired for user {}", usernameFromHeader);
-				((HttpServletResponse) res).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			} else {
-				logger.error("User {} invalid token exception : {} ", usernameFromHeader, e.getMessage());
-				((HttpServletResponse) res).setStatus(HttpServletResponse.SC_FORBIDDEN);
-			}
+			logger.error("User {} invalid token exception : {} ", usernameFromHeader, e.getMessage());
+			((HttpServletResponse) res).setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return;
 		}
 		filterChain.doFilter(request, response);

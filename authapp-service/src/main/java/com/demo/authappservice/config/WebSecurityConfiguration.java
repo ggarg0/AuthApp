@@ -38,11 +38,10 @@ public class WebSecurityConfiguration {
 		return http.csrf().disable()
 				.securityMatcher("/api/**") 
 				.authorizeHttpRequests(authorize -> authorize	
-						.requestMatchers("/api/**").permitAll() 
+					//	.requestMatchers("/api/**").permitAll() 
 						.requestMatchers("/api/admin/**", "/api/manage/**").hasRole("ADMIN")       
 						.requestMatchers("/api/dev/**").hasAnyRole("ADMIN", "DEVELOPER")    
-						.requestMatchers("/api/user/**", "/api/loaddata/**").permitAll() 
-						
+						.requestMatchers("/api/user/**", "/api/loaddata/**").permitAll() 		
 						.anyRequest().authenticated()                      
 					)
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

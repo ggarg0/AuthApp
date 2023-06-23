@@ -15,4 +15,5 @@ public class MessageConstants {
 	public static final String UserAlreadyExist = "User already exist";
 	public static final String InvalidToken = "Invalid token found";
 	public static final String TokenExpired = "Token already expired";
+	public static final String InvalidRequestHeaders = "Invalid request headers passed";
 }

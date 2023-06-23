@@ -19,7 +19,7 @@ import jakarta.persistence.Transient;
 @Entity
 @Table(name = "USERS")
 public class User implements UserDetails {
-
+	
 	@Id
 	@GeneratedValue(generator = "sequence-generator")
 	@GenericGenerator(name = "sequence-generator", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
